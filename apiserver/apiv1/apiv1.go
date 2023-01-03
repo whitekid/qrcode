@@ -1,4 +1,4 @@
-package qrcodeapi
+package apiv1
 
 import (
 	"image/gif"
@@ -13,20 +13,18 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/whitekid/goxp/request"
 
+	"qrcodeapi/pkg/helper"
+	"qrcodeapi/pkg/helper/echox"
 	"qrcodeapi/pkg/qrcode"
 )
 
-type router interface {
-	Route(e *echo.Echo, path string)
-}
-
 type APIv1 struct{}
 
-var _ router = (*APIv1)(nil)
+var _ echox.Router = (*APIv1)(nil)
 
-func newAPIv1() router { return &APIv1{} }
+func NewAPIv1() echox.Router { return &APIv1{} }
 
-func (api *APIv1) Route(e *echo.Echo, path string) {
+func (api *APIv1) Route(e *echox.Echo, path string) {
 	v1 := e.Group(path)
 
 	v1.GET("/qrcode", api.handleGenerate)
@@ -36,17 +34,17 @@ func (api *APIv1) Route(e *echo.Echo, path string) {
 }
 
 type RenderRequest struct {
-	W int    `query:"w"`
-	H int    `query:"h"`
-	T string `query:"t"`
+	W         int    `query:"w"`
+	H         int    `query:"h"`
+	ImageType string `header:"accept"`
 }
 
 func (api *APIv1) renderQRCode(c echo.Context, in *qrcode.QR) error {
 	// NOTE c.Bind()는 Post에서 동작하지 않음
 	req := &RenderRequest{
-		W: parseIntDef(c.QueryParam("w"), 200, 21, 200),
-		H: parseIntDef(c.QueryParam("h"), 200, 21, 200),
-		T: c.QueryParam("t"),
+		W:         helper.ParseIntDef(c.QueryParam("w"), 200, 21, 200),
+		H:         helper.ParseIntDef(c.QueryParam("h"), 200, 21, 200),
+		ImageType: c.Request().Header.Get(echo.HeaderAccept),
 	}
 
 	img, err := in.Render(req.W, req.H)
@@ -54,13 +52,15 @@ func (api *APIv1) renderQRCode(c echo.Context, in *qrcode.QR) error {
 		return err
 	}
 
-	switch strings.ToLower(req.T) {
+	switch strings.TrimPrefix(strings.ToLower(req.ImageType), "image/") {
 	case "jpeg", "jpg":
 		return jpeg.Encode(c.Response().Writer, img, nil)
 	case "gif":
 		return gif.Encode(c.Response().Writer, img, nil)
-	default:
+	case "", "png":
 		return png.Encode(c.Response().Writer, img)
+	default:
+		return echo.ErrUnsupportedMediaType
 	}
 }
 

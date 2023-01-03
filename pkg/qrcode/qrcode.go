@@ -158,10 +158,11 @@ type SocialProfile struct {
 	ID   string
 }
 
-func setField(vc vcard.Card, key, value string) { vc[key] = []*vcard.Field{{Value: value}} }
-func setFieldIf(vc vcard.Card, key, value string) {
-	if value != "" {
-		setField(vc, key, value)
+func setField(vc vcard.Card, key, value string) {
+	_, exists := vc[key]
+
+	if (exists && value == "") || value != "" {
+		vc[key] = []*vcard.Field{{Value: value}}
 	}
 }
 
@@ -171,19 +172,19 @@ func Contact(card *Card) (*QR, error) {
 		"N":       []*vcard.Field{{Value: fmt.Sprintf("%s;%s;%s;%s;%s", card.LastName, card.FirstName, card.MiddleName, card.PrefixName, card.SuffixName)}}, // Name
 	}
 
-	setFieldIf(vc, "EMAIL;type=INTERNET;type=HOME;type=pref", card.HomeEmail)
-	setFieldIf(vc, "EMAIL;type=INTERNET;type=WORK", card.WorkEmail)
-	setFieldIf(vc, "TEL;type=CELL;type=VOICE;type=pref", card.Mobile)
-	setFieldIf(vc, "TEL;type=HOME;type=VOICE", card.HomeTel)
-	setFieldIf(vc, "TEL;type=WORK;type=VOICE", card.WorkTel)
-	setFieldIf(vc, "TEL;type=MAIN", card.Tel)
+	setField(vc, "EMAIL;type=INTERNET;type=HOME;type=pref", card.HomeEmail)
+	setField(vc, "EMAIL;type=INTERNET;type=WORK", card.WorkEmail)
+	setField(vc, "TEL;type=CELL;type=VOICE;type=pref", card.Mobile)
+	setField(vc, "TEL;type=HOME;type=VOICE", card.HomeTel)
+	setField(vc, "TEL;type=WORK;type=VOICE", card.WorkTel)
+	setField(vc, "TEL;type=MAIN", card.Tel)
 
-	setFieldIf(vc, "TEL;type=HOME;type=FAX", card.HomeFax)
-	setFieldIf(vc, "TEL;type=WORK;type=FAX", card.WorkFax)
+	setField(vc, "TEL;type=HOME;type=FAX", card.HomeFax)
+	setField(vc, "TEL;type=WORK;type=FAX", card.WorkFax)
 
-	setFieldIf(vc, "TEL;type=PAGER", card.Pager)
-	setFieldIf(vc, "ADR;type=HOME;type=pref", card.HomeAddr.String())
-	setFieldIf(vc, "ADR;type=WORK", card.WorkAddr.String())
+	setField(vc, "TEL;type=PAGER", card.Pager)
+	setField(vc, "ADR;type=HOME;type=pref", card.HomeAddr.String())
+	setField(vc, "ADR;type=WORK", card.WorkAddr.String())
 
 	for _, social := range card.SocialProfiles {
 		typ := social.Type
@@ -207,11 +208,13 @@ func Contact(card *Card) (*QR, error) {
 			ID = "http://t.qq.com/" + ID
 		case "yelp":
 			typ = "X-SOCIALPROFILE;type=Yelp:x-apple"
+		default:
+			return nil, fmt.Errorf("unsupported social type: %s", social.Type)
 		}
 		setField(vc, "X-SOCIALPROFILE;type="+typ, ID)
 	}
 
-	setFieldIf(vc, "NOTE", card.Note)
+	setField(vc, "NOTE", card.Note)
 
 	var buf bytes.Buffer
 	if err := vcard.NewEncoder(&buf).Encode(vc); err != nil {

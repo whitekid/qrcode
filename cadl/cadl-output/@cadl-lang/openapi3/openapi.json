@@ -1,0 +1,649 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "qrcode generate api",
+    "version": "v1"
+  },
+  "tags": [
+    {
+      "name": "v1"
+    }
+  ],
+  "paths": {
+    "/v1/qrcode": {
+      "get": {
+        "tags": [
+          "v1"
+        ],
+        "operationId": "QRcode_generate",
+        "summary": "generate text, url and ssid qrcode",
+        "description": "doc text, url and ssid qrcode",
+        "parameters": [
+          {
+            "name": "content",
+            "in": "query",
+            "required": false,
+            "description": "any text content",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "url",
+            "in": "query",
+            "required": false,
+            "description": "url like https://example.com",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ssid",
+            "in": "query",
+            "required": false,
+            "description": "ssid",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "auth",
+            "in": "query",
+            "required": false,
+            "description": "ssid only: auth type",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "WEP",
+                "WPA",
+                "WPA2"
+              ]
+            }
+          },
+          {
+            "name": "pass",
+            "in": "query",
+            "required": false,
+            "description": "ssid only: password",
+            "schema": {
+              "type": "string",
+              "format": "password"
+            }
+          },
+          {
+            "name": "hidden",
+            "in": "query",
+            "required": false,
+            "description": "ssid only: hidden ssid",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "eap",
+            "in": "query",
+            "required": false,
+            "description": "ssid only: EAP method",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "anon",
+            "in": "query",
+            "required": false,
+            "description": "ssid only",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ident",
+            "in": "query",
+            "required": false,
+            "description": "ssid only",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ph2",
+            "in": "query",
+            "required": false,
+            "description": "ssid only",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/CommonParams.w"
+          },
+          {
+            "$ref": "#/components/parameters/CommonParams.h"
+          },
+          {
+            "$ref": "#/components/parameters/CommonParams.accept"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "image/png": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "image/jpeg": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "image/gif": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The server could not understand the request due to invalid syntax."
+          },
+          "415": {
+            "description": "Client Error"
+          },
+          "429": {
+            "description": "Client Error"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    },
+    "/v1/contact": {
+      "get": {
+        "tags": [
+          "v1"
+        ],
+        "operationId": "Contact_generate",
+        "summary": "generate contact qrcode",
+        "parameters": [
+          {
+            "name": "name[first]",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "name[list]",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "name[last]",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "company",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "department",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "email",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "email[home]",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "email[work]",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "tel",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "tel[home]",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "tel[work]",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "mobile",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pager",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fax[home]",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fax[work]",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "addr[home][postcode]",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "addr[home][country]",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "addr[home][province]",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "addr[home][city]",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "addr[home][street]",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "addr[home][street2]",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "addr[work][postcode]",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "addr[work][country]",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "addr[work][province]",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "addr[work][city]",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "addr[work][street]",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "addr[work][street2]",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "note",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/CommonParams.w"
+          },
+          {
+            "$ref": "#/components/parameters/CommonParams.h"
+          },
+          {
+            "$ref": "#/components/parameters/CommonParams.accept"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "image/png": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "image/jpeg": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "image/gif": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The server could not understand the request due to invalid syntax."
+          },
+          "415": {
+            "description": "Client Error"
+          },
+          "429": {
+            "description": "Client Error"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    },
+    "/v1/vcard": {
+      "post": {
+        "tags": [
+          "v1"
+        ],
+        "operationId": "VCard_generate",
+        "summary": "generate vcard qrcode",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/CommonParams.w"
+          },
+          {
+            "$ref": "#/components/parameters/CommonParams.h"
+          },
+          {
+            "$ref": "#/components/parameters/CommonParams.accept"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "image/png": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "image/jpeg": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "image/gif": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The server could not understand the request due to invalid syntax."
+          },
+          "415": {
+            "description": "Client Error"
+          },
+          "429": {
+            "description": "Client Error"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "text/vcard": {
+              "schema": {
+                "type": "string",
+                "format": "binary"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/vevent": {
+      "post": {
+        "tags": [
+          "v1"
+        ],
+        "operationId": "VEvent_generate",
+        "summary": "generate vevent qrcode",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/CommonParams.w"
+          },
+          {
+            "$ref": "#/components/parameters/CommonParams.h"
+          },
+          {
+            "$ref": "#/components/parameters/CommonParams.accept"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "image/png": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "image/jpeg": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "image/gif": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The server could not understand the request due to invalid syntax."
+          },
+          "415": {
+            "description": "Client Error"
+          },
+          "429": {
+            "description": "Client Error"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "text/vevent": {
+              "schema": {
+                "type": "string",
+                "format": "binary"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "parameters": {
+      "CommonParams.w": {
+        "name": "w",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "default": 200
+        }
+      },
+      "CommonParams.h": {
+        "name": "h",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "default": 200
+        }
+      },
+      "CommonParams.accept": {
+        "name": "accept",
+        "in": "header",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "default": "image/png"
+        }
+      }
+    },
+    "schemas": {
+      "QRCode": {
+        "type": "object",
+        "properties": {
+          "qrcode": {
+            "type": "string",
+            "format": "byte"
+          }
+        },
+        "required": [
+          "qrcode"
+        ]
+      },
+      "CommonParams": {
+        "type": "object",
+        "properties": {}
+      },
+      "Error": {
+        "type": "object",
+        "properties": {}
+      }
+    }
+  },
+  "servers": [
+    {
+      "url": "https://qrcodeapi.woosum.net/api",
+      "description": "",
+      "variables": {}
+    }
+  ]
+}

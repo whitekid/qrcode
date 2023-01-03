@@ -1,25 +1,12 @@
-package qrcodeapi
+package apiserver
 
 import (
-	"context"
-	"net/http/httptest"
 	"testing"
 
 	"github.com/stretchr/testify/require"
+
+	"qrcodeapi/pkg/helper"
 )
-
-func newTestServer(ctx context.Context, r router) *httptest.Server {
-	e := newEcho()
-	r.Route(e, "")
-
-	ts := httptest.NewServer(e)
-	go func() {
-		<-ctx.Done()
-		ts.Close()
-	}()
-
-	return ts
-}
 
 func TestParseInt(t *testing.T) {
 	type args struct {
@@ -38,7 +25,7 @@ func TestParseInt(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			require.Equal(t, tt.want, parseIntDef(tt.args.value, tt.args.defaultValue, tt.args.minValue, tt.args.maxValue))
+			require.Equal(t, tt.want, helper.ParseIntDef(tt.args.value, tt.args.defaultValue, tt.args.minValue, tt.args.maxValue))
 		})
 	}
 }

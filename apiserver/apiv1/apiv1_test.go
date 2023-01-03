@@ -1,4 +1,4 @@
-package qrcodeapi
+package apiv1
 
 import (
 	"context"
@@ -9,17 +9,19 @@ import (
 	"testing"
 	"time"
 
+	"github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/require"
 	"github.com/whitekid/goxp/request"
 
 	"qrcodeapi/pkg/qrcode"
+	"qrcodeapi/pkg/testutils.go"
 )
 
 func TestText(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
-	ts := newTestServer(ctx, newAPIv1())
+	ts := testutils.NewTestServer(ctx, NewAPIv1())
 
 	type args struct {
 		width     int
@@ -29,15 +31,17 @@ func TestText(t *testing.T) {
 	tests := [...]struct {
 		name            string
 		args            args
+		wantStatus      int
 		wantW, wantH    int
 		wantContentType string
 		wantImage       string
 		wantErr         bool
 	}{
-		{"default", args{0, 0, ""}, 200, 200, "image/png", "png", false},
-		{"default", args{0, 0, "png"}, 200, 200, "image/png", "png", false},
-		{"default", args{0, 0, "jpg"}, 200, 200, "image/jpeg", "jpeg", false},
-		{"default", args{0, 0, "gif"}, 200, 200, "image/gif", "gif", false},
+		{"missing accept", args{0, 0, ""}, http.StatusOK, 200, 200, "image/png", "png", false},
+		{"invalid image type", args{0, 0, "image/unknown"}, http.StatusUnsupportedMediaType, 200, 200, "", "", false},
+		{"default", args{0, 0, "image/png"}, http.StatusOK, 200, 200, "image/png", "png", false},
+		{"default", args{0, 0, "image/jpg"}, http.StatusOK, 200, 200, "image/jpeg", "jpeg", false},
+		{"default", args{0, 0, "image/gif"}, http.StatusOK, 200, 200, "image/gif", "gif", false},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -52,13 +56,15 @@ func TestText(t *testing.T) {
 			}
 
 			if tt.args.imageType != "" {
-				req = req.Query("t", tt.args.imageType)
+				req = req.Header(echo.HeaderAccept, tt.args.imageType)
 			}
 
 			resp, err := req.Do(ctx)
-			require.Falsef(t, (err != nil) != tt.wantErr, `qrcode request failed`, `error = %v, wantErr = %v`, err, tt.wantErr)
-			require.NoError(t, err)
-			require.Truef(t, resp.Success(), "failed with %d", resp.StatusCode)
+			require.Falsef(t, (err != nil) != tt.wantErr, `qrcode request failed: error = %v, wantErr = %v`, err, tt.wantErr)
+			require.Equalf(t, tt.wantStatus, resp.StatusCode, "status not equals: want=%v, got=%v", tt.wantStatus, resp.StatusCode)
+			if !resp.Success() {
+				return
+			}
 
 			require.Equal(t, tt.wantContentType, resp.Header.Get(request.HeaderContentType))
 
@@ -80,7 +86,7 @@ func TestURL(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
-	ts := newTestServer(ctx, newAPIv1())
+	ts := testutils.NewTestServer(ctx, NewAPIv1())
 
 	resp, err := request.Get("%s/qrcode", ts.URL).
 		Query("url", "google.com").Do(ctx)
@@ -101,7 +107,7 @@ func TestWifi(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
-	ts := newTestServer(ctx, newAPIv1())
+	ts := testutils.NewTestServer(ctx, NewAPIv1())
 
 	type args struct {
 		query    map[string]string
@@ -160,7 +166,7 @@ func TestContact(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
-	ts := newTestServer(ctx, newAPIv1())
+	ts := testutils.NewTestServer(ctx, NewAPIv1())
 
 	resp, err := request.Get("%s/contact", ts.URL).
 		Query("name[first]", "firstname").
@@ -176,7 +182,7 @@ func TestContactVCF(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
-	ts := newTestServer(ctx, newAPIv1())
+	ts := testutils.NewTestServer(ctx, NewAPIv1())
 
 	content := `BEGIN:VCARD
 VERSION:4.0
@@ -204,7 +210,7 @@ func TestVEvent(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
-	ts := newTestServer(ctx, newAPIv1())
+	ts := testutils.NewTestServer(ctx, NewAPIv1())
 
 	content := `BEGIN:VEVENT
 SUMMARY:Summer+Vacation!

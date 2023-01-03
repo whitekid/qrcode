@@ -6,35 +6,35 @@ Just simple QRCode API Service
 
 ### Text
 
-![TEXT](https://qrcodeapi.woosum.net/v1/qrcode?content=HELLO)
+![TEXT](https://qrcodeapi.woosum.net/api/v1/qrcode?content=HELLO)
 
-<https://qrcodeapi.woosum.net/v1/qrcode?content=HELLO>
+<https://qrcodeapi.woosum.net/api/v1/qrcode?content=HELLO>
 
 ### URL
 
 with content:
 
-![URL](https://qrcodeapi.woosum.net/v1/qrcode?content=https://github.com)
+![URL](https://qrcodeapi.woosum.net/api/v1/qrcode?content=https://github.com)
 
-<https://qrcodeapi.woosum.net/v1/qrcode?content=https://github.com>
+<https://qrcodeapi.woosum.net/api/v1/qrcode?content=https://github.com>
 
 with url:
 
-![URL](https://qrcodeapi.woosum.net/v1/qrcode?url=github.com)
+![URL](https://qrcodeapi.woosum.net/api/v1/qrcode?url=github.com)
 
-<https://qrcodeapi.woosum.net/v1/qrcode?url=github.com>
+<https://qrcodeapi.woosum.net/api/v1/qrcode?url=github.com>
 
 ### Join WIFI
 
-![WIFI](https://qrcodeapi.woosum.net/v1/qrcode?ssid=MySSID&auth=WPA&pass=mypassword)
+![WIFI](https://qrcodeapi.woosum.net/api/v1/qrcode?ssid=MySSID&auth=WPA&pass=mypassword)
 
-<https://qrcodeapi.woosum.net/v1/qrcode?ssid=MySSID&auth=WPA&pass=mypassword>
+<https://qrcodeapi.woosum.net/api/v1/qrcode?ssid=MySSID&auth=WPA&pass=mypassword>
 
 ### Contact
 
-![Contact](https://qrcodeapi.woosum.net/v1/contact?name[last]=Choe&name[first]=Cheng%20Dae)
+![Contact](https://qrcodeapi.woosum.net/api/v1/contact?name[last]=Choe&name[first]=Cheng%20Dae)
 
-<https://qrcodeapi.woosum.net/v1/contact?name[last]=Choe&name[first]=Cheng20Dae>
+<https://qrcodeapi.woosum.net/api/v1/contact?name[last]=Choe&name[first]=Cheng20Dae>
 
 #### with vcard
 
