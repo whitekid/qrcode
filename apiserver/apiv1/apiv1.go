@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/chai2010/webp"
 	"github.com/emersion/go-vcard"
 	"github.com/labstack/echo/v4"
 	"github.com/whitekid/goxp/request"
@@ -64,6 +65,8 @@ func (api *APIv1) renderQRCode(c echo.Context, in *qrcode.QR) error {
 			return jpeg.Encode(c.Response().Writer, img, nil)
 		case "image/gif":
 			return gif.Encode(c.Response().Writer, img, nil)
+		case "image/webp":
+			return webp.Encode(c.Response().Writer, img, nil)
 		case "", "*/*", "image/*", "image/png":
 			return png.Encode(c.Response().Writer, img)
 		}

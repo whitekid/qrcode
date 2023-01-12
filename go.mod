@@ -2,7 +2,10 @@ module qrcodeapi
 
 go 1.19
 
+replace github.com/chai2010/webp => github.com/chai2010/webp v1.1.2-0.20220219151144-e81c7511b15a
+
 require (
+	github.com/chai2010/webp v0.0.0-00010101000000-000000000000
 	github.com/emersion/go-vcard v0.0.0-20220507122617-d4056df0ec4a
 	github.com/go-openapi/runtime v0.25.0
 	github.com/go-playground/validator/v10 v10.11.1
@@ -71,5 +74,3 @@ require (
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
-
-replace github.com/whitekid/goxp v0.0.10 => github.com/whitekid/goxp v0.0.0-20230111081110-dc6cd0f76511
