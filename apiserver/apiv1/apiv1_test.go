@@ -39,6 +39,8 @@ func TestText(t *testing.T) {
 	}{
 		{"missing accept", args{0, 0, ""}, http.StatusOK, 200, 200, "image/png", "png", false},
 		{"accept text", args{0, 0, "text/html"}, http.StatusOK, 200, 200, "image/png", "png", false},
+		{"accept multiple", args{0, 0, "image/avif,*/*"}, http.StatusOK, 200, 200, "image/png", "png", false},
+		{"accept text", args{0, 0, "*/*"}, http.StatusOK, 200, 200, "image/png", "png", false},
 		{"invalid image type", args{0, 0, "image/unknown"}, http.StatusUnsupportedMediaType, 200, 200, "", "", false},
 		{"default", args{0, 0, "image/png"}, http.StatusOK, 200, 200, "image/png", "png", false},
 		{"default", args{0, 0, "image/jpg"}, http.StatusOK, 200, 200, "image/jpeg", "jpeg", false},

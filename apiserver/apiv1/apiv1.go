@@ -52,21 +52,24 @@ func (api *APIv1) renderQRCode(c echo.Context, in *qrcode.QR) error {
 		return err
 	}
 
-	accept := strings.ToLower(req.ImageType)
-	if strings.HasPrefix(accept, "text/") {
-		accept = "image/png"
+	// image/avif,image/webp,*/*
+	accepts := strings.Split(strings.ToLower(req.ImageType), ",")
+	for _, accept := range accepts {
+		if strings.HasPrefix(accept, "text/") {
+			accept = "image/png"
+		}
+
+		switch strings.ToLower(accept) {
+		case "image/jpeg", "image/jpg":
+			return jpeg.Encode(c.Response().Writer, img, nil)
+		case "image/gif":
+			return gif.Encode(c.Response().Writer, img, nil)
+		case "", "*/*", "image/*", "image/png":
+			return png.Encode(c.Response().Writer, img)
+		}
 	}
 
-	switch strings.TrimPrefix(strings.ToLower(accept), "image/") {
-	case "jpeg", "jpg":
-		return jpeg.Encode(c.Response().Writer, img, nil)
-	case "gif":
-		return gif.Encode(c.Response().Writer, img, nil)
-	case "", "png":
-		return png.Encode(c.Response().Writer, img)
-	default:
-		return echo.ErrUnsupportedMediaType
-	}
+	return echo.ErrUnsupportedMediaType
 }
 
 type GenerateRequest struct {
