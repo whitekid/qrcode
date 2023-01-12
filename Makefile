@@ -23,9 +23,8 @@ dep:
 	@rm -f go.mod go.sum
 	@go mod init qrcodeapi
 
-	@$(MAKE) tidy
+	@go mod edit -replace github.com/chai2010/webp=github.com/chai2010/webp@v1.2-alpha1
 
-	@go mod edit -replace github.com/whitekid/goxp@v0.0.10=github.com/whitekid/goxp@master
 	@$(MAKE) tidy
 
 tidy:

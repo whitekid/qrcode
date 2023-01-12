@@ -45,6 +45,7 @@ func TestText(t *testing.T) {
 		{"default", args{0, 0, "image/png"}, http.StatusOK, 200, 200, "image/png", "png", false},
 		{"default", args{0, 0, "image/jpg"}, http.StatusOK, 200, 200, "image/jpeg", "jpeg", false},
 		{"default", args{0, 0, "image/gif"}, http.StatusOK, 200, 200, "image/gif", "gif", false},
+		{"default", args{0, 0, "image/webp"}, http.StatusOK, 200, 200, "image/webp", "webp", false},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

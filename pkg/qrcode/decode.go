@@ -6,6 +6,7 @@ import (
 	_ "image/jpeg"
 	_ "image/png"
 
+	_ "github.com/chai2010/webp"
 	"github.com/makiuchi-d/gozxing"
 	"github.com/makiuchi-d/gozxing/qrcode"
 )
