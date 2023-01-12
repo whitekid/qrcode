@@ -24,9 +24,9 @@ func TestText(t *testing.T) {
 	ts := testutils.NewTestServer(ctx, NewAPIv1())
 
 	type args struct {
-		width     int
-		height    int
-		imageType string
+		width  int
+		height int
+		accept string
 	}
 	tests := [...]struct {
 		name            string
@@ -38,6 +38,7 @@ func TestText(t *testing.T) {
 		wantErr         bool
 	}{
 		{"missing accept", args{0, 0, ""}, http.StatusOK, 200, 200, "image/png", "png", false},
+		{"accept text", args{0, 0, "text/html"}, http.StatusOK, 200, 200, "image/png", "png", false},
 		{"invalid image type", args{0, 0, "image/unknown"}, http.StatusUnsupportedMediaType, 200, 200, "", "", false},
 		{"default", args{0, 0, "image/png"}, http.StatusOK, 200, 200, "image/png", "png", false},
 		{"default", args{0, 0, "image/jpg"}, http.StatusOK, 200, 200, "image/jpeg", "jpeg", false},
@@ -55,8 +56,8 @@ func TestText(t *testing.T) {
 				req = req.Query("h", strconv.FormatInt(int64(tt.args.height), 10))
 			}
 
-			if tt.args.imageType != "" {
-				req = req.Header(echo.HeaderAccept, tt.args.imageType)
+			if tt.args.accept != "" {
+				req = req.Header(echo.HeaderAccept, tt.args.accept)
 			}
 
 			resp, err := req.Do(ctx)

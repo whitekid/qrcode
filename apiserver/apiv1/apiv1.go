@@ -52,7 +52,12 @@ func (api *APIv1) renderQRCode(c echo.Context, in *qrcode.QR) error {
 		return err
 	}
 
-	switch strings.TrimPrefix(strings.ToLower(req.ImageType), "image/") {
+	accept := strings.ToLower(req.ImageType)
+	if strings.HasPrefix(accept, "text/") {
+		accept = "image/png"
+	}
+
+	switch strings.TrimPrefix(strings.ToLower(accept), "image/") {
 	case "jpeg", "jpg":
 		return jpeg.Encode(c.Response().Writer, img, nil)
 	case "gif":
