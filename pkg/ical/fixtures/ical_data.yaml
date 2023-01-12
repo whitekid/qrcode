@@ -1,0 +1,76 @@
+events:
+  example1:
+    event:
+      UID: 19970901T130000Z-123401@host.com
+      COMMENT: |
+        The meeting really needs to include both ourselves
+        and the customer. We can't hold this  meeting without them.
+        As a matter of fact\, the venue for the meeting ought to be at
+        their site. - - John
+    data: |
+      BEGIN:VEVENT
+      UID:19970901T130000Z-123401@host.com
+      COMMENT:The meeting really needs to include both ourselves
+        and the customer. We can't hold this  meeting without them.
+        As a matter of fact\, the venue for the meeting ought to be at
+        their site. - - John
+      END:VEVENT
+  example2:
+    event:
+      UID: 19970901T130000Z-123401@host.com
+      DTSTAMP: 19970901T1300Z
+      DTSTART: 19970903T163000Z
+      DTEND: 19970903T190000Z
+      SUMMARY: Annual Employee Review
+      CLASS: PRIVATE
+      CATEGORIES: BUSINESS,HUMAN RESOURCES
+    data: |
+      BEGIN:VEVENT
+      UID:19970901T130000Z-123401@host.com
+      DTSTAMP:19970901T1300Z
+      DTSTART:19970903T163000Z
+      DTEND:19970903T190000Z
+      SUMMARY:Annual Employee Review
+      CLASS:PRIVATE
+      CATEGORIES:BUSINESS,HUMAN RESOURCES
+      END:VEVENT
+  example3:
+    event:
+      UID: 19970901T130000Z-123402@host.com
+      DTSTAMP: 19970901T1300Z
+      DTSTART: 19970401T163000Z
+      DTEND: 19970402T010000Z
+      SUMMARY: Laurel is in sensitivity awareness class.
+      CLASS: PUBLIC
+      CATEGORIES: BUSINESS,HUMAN RESOURCES
+      TRANSP: TRANSPARENT
+    data: |
+      BEGIN:VEVENT
+      UID:19970901T130000Z-123402@host.com
+      DTSTAMP:19970901T1300Z
+      DTSTART:19970401T163000Z
+      DTEND:19970402T010000Z
+      SUMMARY:Laurel is in sensitivity awareness class.
+      CLASS:PUBLIC
+      CATEGORIES:BUSINESS,HUMAN RESOURCES
+      TRANSP:TRANSPARENT
+      END:VEVENT
+  example4:
+    event:
+      UID: 19970901T130000Z-123403@host.com
+      DTSTAMP: 19970901T1300Z
+      DTSTART: "19971102"
+      SUMMARY: Our Blissful Anniversary
+      CLASS: CONFIDENTIAL
+      CATEGORIES: ANNIVERSARY,PERSONAL,SPECIAL OCCASION
+      RRULE: FREQ=YEARLY
+    data: |
+      BEGIN:VEVENT
+      UID:19970901T130000Z-123403@host.com
+      DTSTAMP:19970901T1300Z
+      DTSTART:19971102
+      SUMMARY:Our Blissful Anniversary
+      CLASS:CONFIDENTIAL
+      CATEGORIES:ANNIVERSARY,PERSONAL,SPECIAL OCCASION
+      RRULE:FREQ=YEARLY
+      END:VEVENT

@@ -25,7 +25,8 @@
             "required": false,
             "description": "any text content",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "maxLength": 1024
             }
           },
           {
@@ -43,7 +44,8 @@
             "required": false,
             "description": "ssid",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "maxLength": 20
             }
           },
           {
@@ -67,6 +69,7 @@
             "description": "ssid only: password",
             "schema": {
               "type": "string",
+              "maxLength": 20,
               "format": "password"
             }
           },
@@ -85,7 +88,8 @@
             "required": false,
             "description": "ssid only: EAP method",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "maxLength": 20
             }
           },
           {
@@ -94,7 +98,8 @@
             "required": false,
             "description": "ssid only",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "maxLength": 20
             }
           },
           {
@@ -103,7 +108,8 @@
             "required": false,
             "description": "ssid only",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "maxLength": 20
             }
           },
           {
@@ -112,7 +118,8 @@
             "required": false,
             "description": "ssid only",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "maxLength": 20
             }
           },
           {
@@ -177,7 +184,8 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "maxLength": 100
             }
           },
           {
@@ -185,7 +193,8 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "maxLength": 100
             }
           },
           {
@@ -193,7 +202,8 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "maxLength": 100
             }
           },
           {
@@ -201,7 +211,8 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "maxLength": 100
             }
           },
           {
@@ -209,7 +220,8 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "maxLength": 100
             }
           },
           {
@@ -217,7 +229,8 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "maxLength": 100
             }
           },
           {
@@ -225,7 +238,9 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "email",
+              "maxLength": 100
             }
           },
           {
@@ -233,7 +248,9 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "email",
+              "maxLength": 100
             }
           },
           {
@@ -241,7 +258,9 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "email",
+              "maxLength": 100
             }
           },
           {
@@ -249,7 +268,8 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "maxLength": 100
             }
           },
           {
@@ -257,7 +277,8 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "maxLength": 100
             }
           },
           {
@@ -265,7 +286,8 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "maxLength": 100
             }
           },
           {
@@ -273,7 +295,8 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "maxLength": 100
             }
           },
           {
@@ -281,7 +304,8 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "maxLength": 100
             }
           },
           {
@@ -289,7 +313,8 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "maxLength": 100
             }
           },
           {
@@ -297,7 +322,8 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "maxLength": 100
             }
           },
           {
@@ -305,7 +331,8 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "maxLength": 100
             }
           },
           {
@@ -313,7 +340,8 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "maxLength": 100
             }
           },
           {
@@ -321,7 +349,8 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "maxLength": 100
             }
           },
           {
@@ -329,7 +358,8 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "maxLength": 100
             }
           },
           {
@@ -337,7 +367,8 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "maxLength": 100
             }
           },
           {
@@ -345,7 +376,8 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "maxLength": 100
             }
           },
           {
@@ -353,7 +385,8 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "maxLength": 100
             }
           },
           {
@@ -361,7 +394,8 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "maxLength": 100
             }
           },
           {
@@ -369,7 +403,8 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "maxLength": 100
             }
           },
           {
@@ -377,7 +412,8 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "maxLength": 100
             }
           },
           {
@@ -385,7 +421,8 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "maxLength": 100
             }
           },
           {
@@ -393,7 +430,8 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "maxLength": 100
             }
           },
           {
@@ -401,7 +439,8 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "maxLength": 100
             }
           },
           {

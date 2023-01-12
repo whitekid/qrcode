@@ -1,7 +1,6 @@
 package qrcode
 
 import (
-	"bytes"
 	"fmt"
 	"image"
 	"strings"
@@ -10,7 +9,11 @@ import (
 	"github.com/makiuchi-d/gozxing"
 	"github.com/makiuchi-d/gozxing/qrcode"
 	"github.com/whitekid/goxp/fx"
+	"github.com/whitekid/goxp/log"
 	"github.com/whitekid/goxp/types"
+	"github.com/whitekid/goxp/validator"
+
+	"qrcodeapi/pkg/ical"
 )
 
 type QR struct {
@@ -23,7 +26,18 @@ func (q *QR) Render(width, height int) (image.Image, error) {
 			width, height, nil)
 }
 
-func Text(content string) (*QR, error) { return &QR{Content: content}, nil }
+func Text(text string) (*QR, error) {
+	if err := validator.Struct(&struct {
+		Text string `validate:"required,max=1024"`
+	}{
+		Text: text,
+	}); err != nil {
+		return nil, err
+	}
+
+	log.Debugf("Text: %s", text)
+	return &QR{Content: text}, nil
+}
 
 type WiFiAuth int
 
@@ -41,27 +55,36 @@ var (
 		AuthWPA:  "WPA",
 		AuthWPA2: "WPA2",
 	}
-	strToAuthMap = map[string]WiFiAuth{
-		"WEP":  AuthWEP,
-		"WPA":  AuthWPA,
-		"WPA2": AuthWPA2,
-	}
+	strToAuthMap = fx.MapItems(authStrMap, func(k WiFiAuth, v string) (string, WiFiAuth) { return v, k })
 )
 
 func (e WiFiAuth) String() string     { return authStrMap[e] }
 func StrToWifiAuth(s string) WiFiAuth { return strToAuthMap[s] }
 
 type WPA2Options struct {
-	EAPMethod         string
-	AnonymousIdentity string
-	Identity          string
-	Phase2Method      string
+	EAPMethod         string `validate:"max=20"`
+	AnonymousIdentity string `validate:"max=20"`
+	Identity          string `validate:"max=20"`
+	Phase2Method      string `validate:"max=20"`
 }
 
 // WIFI generate QRCode for joining wifi network
 // enc: WEP|WPA|blank
-func WIFI(ssid string, auth WiFiAuth, password string, hidden *bool,
-	wpa2 WPA2Options) (*QR, error) {
+func WIFI(ssid string, auth WiFiAuth, password string, hidden *bool, wpa2 WPA2Options) (*QR, error) {
+	if err := validator.Struct(&struct {
+		SSID        *string      `validate:"max=20"`
+		Password    *string      `validate:"max=20"`
+		Hidden      *bool        `validate:"omitempty"`
+		WPA2Options *WPA2Options `validate:"omitempty,dive"`
+	}{
+		SSID:        &ssid,
+		Password:    &password,
+		Hidden:      hidden,
+		WPA2Options: &wpa2,
+	}); err != nil {
+		return nil, err
+	}
+
 	var hiddenStr string
 
 	if hidden != nil {
@@ -97,51 +120,51 @@ func WIFI(ssid string, auth WiFiAuth, password string, hidden *bool,
 }
 
 type Card struct {
-	LastName      string
-	FirstName     string
-	MiddleName    string
-	PrefixName    string // 경칭
-	SuffixName    string // 호칭
-	FormattedName string // vcf
-	NickName      string
+	LastName      string `validate:"max=100"`
+	FirstName     string `validate:"max=100"`
+	MiddleName    string `validate:"max=100"`
+	PrefixName    string `validate:"max=100"` // 경칭
+	SuffixName    string `validate:"max=100"` // 호칭
+	FormattedName string `validate:"max=100"` // vcf
+	NickName      string `validate:"max=100"`
 
-	Company    string // 회사
-	Department string // 부서
-	JobTitle   string // vcf: 직책
+	Company    string `validate:"max=100"` // 회사
+	Department string `validate:"max=100"` // 부서
+	JobTitle   string `validate:"max=100"` // vcf: 직책
 
-	Email     string
-	HomeEmail string
-	WorkEmail string
+	Email     string `validate:"omitempty,email,max=100"`
+	HomeEmail string `validate:"omitempty,email,max=100"`
+	WorkEmail string `validate:"omitempty,email,max=100"`
 
-	Tel     string // MAIN
-	Mobile  string
-	HomeTel string
-	WorkTel string
+	Tel     string `validate:"max=100"` // MAIN
+	Mobile  string `validate:"max=100"`
+	HomeTel string `validate:"max=100"`
+	WorkTel string `validate:"max=100"`
 
-	HomeFax string
-	WorkFax string
+	HomeFax string `validate:"max=100"`
+	WorkFax string `validate:"max=100"`
 
-	Pager string
+	Pager string `validate:"max=100"`
 
-	HomeAddr Address
-	WorkAddr Address
+	HomeAddr Address `validate:"dive"`
+	WorkAddr Address `validate:"dive"`
 
-	Homepage     string
-	WorkHomepage string
-	HomeHomepage string
+	Homepage     string `validate:"omitempty,url,max=100"`
+	WorkHomepage string `validate:"omitempty,url,max=100"`
+	HomeHomepage string `validate:"omitempty,url,max=100"`
 
-	Note string
+	Note string `validate:"max=1024"`
 
-	SocialProfiles []SocialProfile
+	SocialProfiles []SocialProfile `validate:"dive"`
 }
 
 type Address struct {
-	PostCode        string
-	CountryOrRegion string
-	Province        string
-	City            string
-	Street          string
-	Street2         string
+	PostCode        string `validate:"max=100"`
+	CountryOrRegion string `validate:"max=100"`
+	Province        string `validate:"max=100"`
+	City            string `validate:"max=100"`
+	Street          string `validate:"max=100"`
+	Street2         string `validate:"max=100"`
 }
 
 func (addr *Address) String() string {
@@ -154,8 +177,8 @@ func (addr *Address) String() string {
 }
 
 type SocialProfile struct {
-	Type string
-	ID   string
+	Type string `validate:"max=100"`
+	ID   string `validate:"max=100"`
 }
 
 func setField(vc vcard.Card, key, value string) {
@@ -167,6 +190,10 @@ func setField(vc vcard.Card, key, value string) {
 }
 
 func Contact(card *Card) (*QR, error) {
+	if err := validator.Struct(card); err != nil {
+		return nil, err
+	}
+
 	vc := vcard.Card{
 		"VERSION": []*vcard.Field{{Value: "4.0"}},
 		"N":       []*vcard.Field{{Value: fmt.Sprintf("%s;%s;%s;%s;%s", card.LastName, card.FirstName, card.MiddleName, card.PrefixName, card.SuffixName)}}, // Name
@@ -216,20 +243,32 @@ func Contact(card *Card) (*QR, error) {
 
 	setField(vc, "NOTE", card.Note)
 
-	var buf bytes.Buffer
-	if err := vcard.NewEncoder(&buf).Encode(vc); err != nil {
+	s := new(strings.Builder)
+	if err := vcard.NewEncoder(s).Encode(vc); err != nil {
+		return nil, err
+	}
+
+	return Text(s.String())
+}
+
+func VCard(card vcard.Card) (*QR, error) {
+	s := new(strings.Builder)
+
+	if err := vcard.NewEncoder(s).Encode(card); err != nil {
+		return nil, err
+	}
+
+	return Text(strings.TrimSpace(s.String()))
+}
+
+type ICSVEvent struct {
+}
+
+func VEvent(evt *ical.VEvent) (*QR, error) {
+	buf := new(strings.Builder)
+	if err := ical.NewEventEncoder(buf).Encode(evt); err != nil {
 		return nil, err
 	}
 
 	return Text(buf.String())
-}
-
-func VCard(card vcard.Card) (*QR, error) {
-	var buf bytes.Buffer
-
-	if err := vcard.NewEncoder(&buf).Encode(card); err != nil {
-		return nil, err
-	}
-
-	return Text(strings.TrimSpace(buf.String()))
 }

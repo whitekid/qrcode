@@ -4,7 +4,6 @@ import (
 	"image/gif"
 	"image/jpeg"
 	"image/png"
-	"io"
 	"mime"
 	"net/http"
 	"strings"
@@ -16,6 +15,7 @@ import (
 
 	"qrcodeapi/pkg/helper"
 	"qrcodeapi/pkg/helper/echox"
+	"qrcodeapi/pkg/ical"
 	"qrcodeapi/pkg/qrcode"
 )
 
@@ -53,13 +53,8 @@ func (api *APIv1) renderQRCode(c echo.Context, in *qrcode.QR) error {
 		return err
 	}
 
-	// image/avif,image/webp,*/*
 	accepts := strings.Split(strings.ToLower(req.ImageType), ",")
 	for _, accept := range accepts {
-		if strings.HasPrefix(accept, "text/") {
-			accept = "image/png"
-		}
-
 		switch strings.ToLower(accept) {
 		case "image/jpeg", "image/jpg":
 			return jpeg.Encode(c.Response().Writer, img, nil)
@@ -67,7 +62,7 @@ func (api *APIv1) renderQRCode(c echo.Context, in *qrcode.QR) error {
 			return gif.Encode(c.Response().Writer, img, nil)
 		case "image/webp":
 			return webp.Encode(c.Response().Writer, img, nil)
-		case "", "*/*", "image/*", "image/png":
+		case "text/html", "", "*/*", "image/*", "image/png":
 			return png.Encode(c.Response().Writer, img)
 		}
 	}
@@ -268,6 +263,7 @@ func (api *APIv1) handleContactVCard(c echo.Context) error {
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
+	defer c.Request().Body.Close()
 
 	qr, err := qrcode.VCard(card)
 	if err != nil {
@@ -282,14 +278,13 @@ func (api *APIv1) handleVEvent(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest)
 	}
 
-	body, err := io.ReadAll(c.Request().Body)
-	defer c.Request().Body.Close()
-	if err != nil {
-		return err
+	evt := new(ical.VEvent)
+	if err := ical.NewEventDecoder(c.Request().Body).Decode(evt); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
+	defer c.Request().Body.Close()
 
-	content := strings.ReplaceAll(string(body), "\n", "\r\n")
-	qr, err := qrcode.Text(content)
+	qr, err := qrcode.VEvent(evt)
 	if err != nil {
 		return err
 	}

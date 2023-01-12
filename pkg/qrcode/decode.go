@@ -9,6 +9,7 @@ import (
 	_ "github.com/chai2010/webp"
 	"github.com/makiuchi-d/gozxing"
 	"github.com/makiuchi-d/gozxing/qrcode"
+	"github.com/pkg/errors"
 )
 
 func Decode(img image.Image) (string, error) {
@@ -17,11 +18,10 @@ func Decode(img image.Image) (string, error) {
 		return "", err
 	}
 
-	r := qrcode.NewQRCodeReader()
-	result, err := r.Decode(bmp, nil)
+	r, err := qrcode.NewQRCodeReader().Decode(bmp, nil)
 	if err != nil {
-		return "", err
+		return "", errors.Wrap(err, "decode failed")
 	}
 
-	return result.String(), nil
+	return r.String(), nil
 }
