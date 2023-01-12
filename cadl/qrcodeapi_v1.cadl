@@ -1,0 +1,150 @@
+import "@cadl-lang/rest";
+import "@cadl-lang/openapi3";
+
+using Cadl.Http;
+
+namespace api {
+    @service({
+        title: "qrcode generate api",
+        version: "v1",
+    })
+    @server("https://qrcodeapi.woosum.net/api", "")
+    @summary("simple qrcode generate service")
+    @route("v1")
+    @tag("v1")
+    namespace v1 {
+        model QRCode {
+            @header contentType: "image/png" | "image/jpeg" | "image/gif";
+
+            @summary("image content")
+            @body
+            qrcode: bytes;
+        }
+
+        model CommonParams {
+            @summary("image width")
+            @query
+            w?: numeric = 200;
+
+            @summary("image height")
+            @query
+            h?: numeric = 200;
+            @header accept?: string = "image/png";
+        }
+
+        @error
+        model Error {
+            @statusCode statusCode: 400 | 415 | 429 | 500;
+        }
+
+        @route("qrcode")
+        interface QRcode {
+            @summary("generate text, url and ssid qrcode")
+            @doc("doc text, url and ssid qrcode")
+            @get
+            generate(
+                @doc("any text content")
+                @query
+                content?: string,
+
+                @doc("url like https://example.com")
+                @query
+                url?: string,
+
+                @doc("ssid")
+                @query
+                ssid?: string,
+
+                @doc("ssid only: auth type")
+                @query
+                auth?: "WEP" | "WPA" | "WPA2",
+
+                @doc("ssid only: password")
+                @query
+                @secret
+                pass?: string,
+
+                @doc("ssid only: hidden ssid")
+                @query
+                hidden?: boolean,
+
+                @doc("ssid only: EAP method")
+                @query
+                eap?: string,
+
+                @doc("ssid only")
+                @query
+                anon?: string,
+
+                @doc("ssid only")
+                @query
+                ident?: string,
+
+                @doc("ssid only")
+                @query
+                ph2?: string,
+                ...CommonParams
+            ): QRCode | Error;
+        }
+
+        @route("contact")
+        interface Contact {
+            @summary("generate contact qrcode")
+            @get
+            generate(
+                @query "name[first]"?: string,
+                @query "name[list]"?: string,
+                @query "name[last]"?: string,
+                @query company?: string,
+                @query department?: string,
+                @query title?: string,
+                @query email?: string,
+                @query "email[home]"?: string,
+                @query "email[work]"?: string,
+                @query tel?: string,
+                @query "tel[home]"?: string,
+                @query "tel[work]"?: string,
+                @query mobile?: string,
+                @query pager?: string,
+                @query "fax[home]"?: string,
+                @query "fax[work]"?: string,
+                @query "addr[home][postcode]"?: string,
+                @query "addr[home][country]"?: string,
+                @query "addr[home][province]"?: string,
+                @query "addr[home][city]"?: string,
+                @query "addr[home][street]"?: string,
+                @query "addr[home][street2]"?: string,
+                @query "addr[work][postcode]"?: string,
+                @query "addr[work][country]"?: string,
+                @query "addr[work][province]"?: string,
+                @query "addr[work][city]"?: string,
+                @query "addr[work][street]"?: string,
+                @query "addr[work][street2]"?: string,
+                @query note?: string,
+                ...CommonParams
+            ): QRCode | Error;
+        }
+
+        @route("vcard")
+        interface VCard {
+            @summary("generate vcard qrcode")
+            @post
+            generate(
+                @body vcard: bytes,
+                @header contentType: "text/vcard",
+                ...CommonParams
+            ): QRCode | Error;
+        }
+
+        @route("vevent")
+        interface VEvent {
+            @summary("generate vevent qrcode")
+            @post
+            generate(
+                @body vevent: bytes,
+                @header contentType: "text/vevent",
+                ...CommonParams
+            ): QRCode | Error;
+        }
+    }
+}

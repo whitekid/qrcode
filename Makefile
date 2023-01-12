@@ -3,7 +3,7 @@ SRC=$(shell find . -type f -name '*.go' -not -path "./vendor/*" -not -path "*_te
 GOPATH=$(shell go env GOPATH)
 BUILD_FLAGS?=-v
 
-.PHONY: clean test get tidy
+.PHONY: clean test get tidy cadl
 
 all: build
 build: $(TARGET)
@@ -30,3 +30,7 @@ dep:
 
 tidy:
 	@go mod tidy -v
+
+cadl:
+	@cd cadl && cadl compile .
+
