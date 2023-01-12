@@ -84,6 +84,7 @@ func newEcho() *echo.Echo {
 
 	e.Use(middleware.Logger())
 	e.Use(middleware.RateLimiter(middleware.NewRateLimiterMemoryStore(rate.Limit(config.RateLimit()))))
+	e.Use(middleware.CORS())
 
 	return e
 }
