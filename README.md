@@ -38,13 +38,31 @@ with url:
 
 #### with vcard
 
-    POST https://qrcodeapi.woosum.net/contact
-    content-type: text/vcard
-
-    BEGIN:VCARD
+    curl -X POST https://qrcodeapi.woosum.net/api/v1/vcard \
+        -H "content-type: text/vcard" \
+        -H "accept: image/png" \
+        -d "BEGIN:VCARD
     VERSION:4.0
     N:lastname;firstname;;;
-    END:VCARD
+    END:VCARD"
+
+    HTTP/1.1 200 OK
+    Content-Type: image/png
+
+### Event
+
+    curl -X POST https://qrcodeapi.woosum.net/api/v1/vevent \
+        -H "content-type: text/vevent" \
+        -H "accept: image/png" \
+        -d "BEGIN:VEVENT
+    UID:19970901T130000Z-123401@host.com
+    DTSTAMP:19970901T1300Z
+    DTSTART:19970903T163000Z
+    DTEND:19970903T190000Z
+    SUMMARY:Annual Employee Review
+    CLASS:PRIVATE
+    CATEGORIES:BUSINESS,HUMAN RESOURCES
+    END:VEVENT"
 
     HTTP/1.1 200 OK
     Content-Type: image/png
