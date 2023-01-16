@@ -13,42 +13,132 @@ import (
 	"github.com/stretchr/testify/require"
 	"github.com/whitekid/goxp/request"
 
+	"qrcodeapi/pkg/ical"
 	"qrcodeapi/pkg/qrcode"
 	"qrcodeapi/pkg/testutils.go"
 )
 
 func TestText(t *testing.T) {
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
-	defer cancel()
-
-	ts := testutils.NewTestServer(ctx, NewAPIv1())
-
 	type args struct {
-		width  int
-		height int
+		text string
+	}
+	tests := [...]struct {
+		name string
+		args args
+	}{
+		{"default", args{"동해물과 백두산이"}},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+			defer cancel()
+
+			ts := testutils.NewTestServer(ctx, NewAPIv1())
+
+			req := request.Get("%s/qrcode", ts.URL).Query("content", tt.args.text)
+
+			resp, err := req.Do(ctx)
+			require.NoError(t, err)
+			defer resp.Body.Close()
+			require.Truef(t, resp.Success(), "failed with status %v", resp.StatusCode)
+
+			img, _, err := image.Decode(resp.Body)
+			require.NoError(t, err)
+
+			got, err := qrcode.Decode(img)
+			require.NoError(t, err)
+			require.Equal(t, tt.args.text, got)
+		})
+	}
+}
+
+func TestAccept(t *testing.T) {
+	type args struct {
 		accept string
 	}
 	tests := [...]struct {
 		name            string
 		args            args
 		wantStatus      int
-		wantW, wantH    int
 		wantContentType string
 		wantImage       string
-		wantErr         bool
 	}{
-		{"missing accept", args{0, 0, ""}, http.StatusOK, 200, 200, "image/png", "png", false},
-		{"accept text", args{0, 0, "text/html"}, http.StatusOK, 200, 200, "image/png", "png", false},
-		{"accept multiple", args{0, 0, "image/avif,*/*"}, http.StatusOK, 200, 200, "image/png", "png", false},
-		{"accept text", args{0, 0, "*/*"}, http.StatusOK, 200, 200, "image/png", "png", false},
-		{"invalid image type", args{0, 0, "image/unknown"}, http.StatusUnsupportedMediaType, 200, 200, "", "", false},
-		{"default", args{0, 0, "image/png"}, http.StatusOK, 200, 200, "image/png", "png", false},
-		{"default", args{0, 0, "image/jpg"}, http.StatusOK, 200, 200, "image/jpeg", "jpeg", false},
-		{"default", args{0, 0, "image/gif"}, http.StatusOK, 200, 200, "image/gif", "gif", false},
-		{"default", args{0, 0, "image/webp"}, http.StatusOK, 200, 200, "image/webp", "webp", false},
+		{"missing accept", args{""}, http.StatusOK, "image/png", "png"},
+		{"curl/wget default", args{"*/*"}, http.StatusOK, "image/png", "png"},
+		{"invalid image type", args{"image/unknown"}, http.StatusUnsupportedMediaType, "", ""},
+		{"browser default", args{"text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8"}, http.StatusOK, "image/png", "png"},
+		{"default", args{"image/png"}, http.StatusOK, "image/png", "png"},
+		{"default", args{"image/jpg"}, http.StatusOK, "image/jpeg", "jpeg"},
+		{"default", args{"image/gif"}, http.StatusOK, "image/gif", "gif"},
+		{"default", args{"image/webp"}, http.StatusOK, "image/webp", "webp"},
 	}
 	for _, tt := range tests {
+		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+			defer cancel()
+
+			ts := testutils.NewTestServer(ctx, NewAPIv1())
+
+			req := request.Get("%s/qrcode", ts.URL).Query("content", "hello world")
+
+			if tt.args.accept != "" {
+				req = req.Header(echo.HeaderAccept, tt.args.accept)
+			}
+
+			resp, err := req.Do(ctx)
+			require.NoError(t, err)
+			defer resp.Body.Close()
+
+			require.Equalf(t, tt.wantStatus, resp.StatusCode, "status not equals: want=%v, got=%v", tt.wantStatus, resp.StatusCode)
+			if !resp.Success() {
+				return
+			}
+
+			require.Equal(t, tt.wantContentType, resp.Header.Get(request.HeaderContentType))
+
+			img, s, err := image.Decode(resp.Body)
+
+			require.NoError(t, err)
+			require.Equal(t, tt.wantImage, s)
+
+			got, err := qrcode.Decode(img)
+			require.NoError(t, err)
+			require.Equal(t, "hello world", got)
+		})
+	}
+}
+
+func TestSize(t *testing.T) {
+	type args struct {
+		width  int
+		height int
+	}
+	tests := [...]struct {
+		name         string
+		args         args
+		wantW, wantH int
+	}{
+		{"overflow height", args{0, 2000}, 200, 200},
+		{"overflow width", args{2000, 0}, 200, 200},
+		{"underflow width", args{-2000, 0}, 200, 200},
+		{"default", args{0, 0}, 200, 200},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+			defer cancel()
+
+			ts := testutils.NewTestServer(ctx, NewAPIv1())
+
 			req := request.Get("%s/qrcode", ts.URL).Query("content", "hello world")
 
 			if tt.args.width > 0 {
@@ -59,29 +149,16 @@ func TestText(t *testing.T) {
 				req = req.Query("h", strconv.FormatInt(int64(tt.args.height), 10))
 			}
 
-			if tt.args.accept != "" {
-				req = req.Header(echo.HeaderAccept, tt.args.accept)
-			}
-
 			resp, err := req.Do(ctx)
-			require.Falsef(t, (err != nil) != tt.wantErr, `qrcode request failed: error = %v, wantErr = %v`, err, tt.wantErr)
-			require.Equalf(t, tt.wantStatus, resp.StatusCode, "status not equals: want=%v, got=%v", tt.wantStatus, resp.StatusCode)
-			if !resp.Success() {
-				return
-			}
-
-			require.Equal(t, tt.wantContentType, resp.Header.Get(request.HeaderContentType))
+			require.NoError(t, err)
+			require.Equal(t, http.StatusOK, resp.StatusCode)
 
 			defer resp.Body.Close()
-			img, s, err := image.Decode(resp.Body)
+			img, _, err := image.Decode(resp.Body)
+			require.NoError(t, err)
 
 			require.NoError(t, err)
 			require.Equal(t, image.Point{tt.wantW, tt.wantH}, img.Bounds().Size(), "size not equals")
-			require.Equal(t, tt.wantImage, s)
-
-			got, err := qrcode.Decode(img)
-			require.NoError(t, err)
-			require.Equal(t, "hello world", got)
 		})
 	}
 }
@@ -236,5 +313,15 @@ END:VEVENT`
 	got, err := qrcode.Decode(img)
 	require.NoError(t, err)
 
-	require.Equal(t, strings.ReplaceAll(content, "\n", "\r\n"), got)
+	evt := new(ical.VEvent)
+	err = ical.NewEventDecoder(strings.NewReader(got)).Decode(evt)
+	require.NoError(t, err)
+
+	require.Equal(t, "Summer+Vacation!", evt.Summary)
+	require.Equal(t, ical.DateTime{
+		Time: time.Date(2018, 6, 1, 7, 0, 0, 0, time.UTC),
+	}, evt.DtStart)
+	require.Equal(t, ical.DateTime{
+		Time: time.Date(2018, 8, 31, 7, 0, 0, 0, time.UTC),
+	}, evt.DtEnd)
 }

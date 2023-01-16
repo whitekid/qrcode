@@ -38,8 +38,7 @@ func TestDecode(t *testing.T) {
 			img, err := q.Render(200, 200)
 			require.NoError(t, err)
 
-			buf := new(bytes.Buffer)
-			err = tt.args.encode(buf, img)
+			err = tt.args.encode(new(bytes.Buffer), img)
 			require.NoError(t, err)
 
 			got, err := Decode(img)
