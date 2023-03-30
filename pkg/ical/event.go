@@ -8,7 +8,8 @@ import (
 	"strings"
 
 	"github.com/pkg/errors"
-	"github.com/whitekid/goxp/fx"
+	"github.com/whitekid/goxp"
+	"github.com/whitekid/iter"
 )
 
 // VEvent rfc2455 4.6.1 Event Component
@@ -226,7 +227,7 @@ func (enc *eventEncoder) Encode(v any) error {
 	}
 
 	fmt.Fprintf(enc.w, "BEGIN:VEVENT\r\n")
-	if err := enc.writeFields([]fx.Tuple2[string, any]{
+	if err := enc.writeFields([]goxp.Tuple2[string, any]{
 		{"CLASS", evt.Class},
 		{"CREATED", evt.Created},
 		{"DESCRIPTION", evt.Description},
@@ -267,7 +268,7 @@ func (enc *eventEncoder) Encode(v any) error {
 	return nil
 }
 
-func (enc *eventEncoder) writeFields(values []fx.Tuple2[string, any]) (err error) {
+func (enc *eventEncoder) writeFields(values []goxp.Tuple2[string, any]) (err error) {
 	for _, value := range values {
 		if err := enc.writeField(value.V1, value.V2); err != nil {
 			return err
@@ -295,13 +296,14 @@ func (enc *eventEncoder) writeField(field string, value any) (err error) {
 			break
 		}
 
-		fx.ForEach(fx.Chunk([]rune(fmt.Sprintf("%s:%s", field, v)), 78),
-			func(i int, r []rune) {
-				if i == 0 {
-					fmt.Fprintf(enc.w, "%s\r\n", string(r))
-				} else {
-					fmt.Fprintf(enc.w, "  %s\r\n", string(r))
+		i := 0
+		iter.Chunk(iter.Of([]rune(fmt.Sprintf("%s:%s", field, v))...), 78).Each(
+			func(r []rune) {
+				if i != 0 {
+					fmt.Fprintf(enc.w, "  ")
 				}
+				fmt.Fprintf(enc.w, "%s\r\n", string(r))
+				i++
 			})
 
 	case []string:
