@@ -3,7 +3,7 @@ SRC=$(shell find . -type f -name '*.go' -not -path "./vendor/*" -not -path "*_te
 GOPATH=$(shell go env GOPATH)
 BUILD_FLAGS?=-v
 
-.PHONY: clean test get tidy cadl
+.PHONY: clean test get tidy
 
 all: build
 build: $(TARGET)
@@ -30,6 +30,5 @@ dep:
 tidy:
 	@go mod tidy -v
 
-cadl:
-	@cd cadl && cadl compile .
-
+spec/tsp-output/@typespec/openapi3/openapi.yaml: spec/main.tsp spec/qrcodeapi_v1.tsp
+	@cd spec && tsp compile .
