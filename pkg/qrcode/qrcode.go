@@ -8,10 +8,11 @@ import (
 	"github.com/emersion/go-vcard"
 	"github.com/makiuchi-d/gozxing"
 	"github.com/makiuchi-d/gozxing/qrcode"
+	"github.com/whitekid/goxp"
 	"github.com/whitekid/goxp/fx"
 	"github.com/whitekid/goxp/log"
 	"github.com/whitekid/goxp/types"
-	"github.com/whitekid/goxp/validator"
+	"github.com/whitekid/goxp/validate"
 
 	"qrcodeapi/pkg/ical"
 )
@@ -27,7 +28,7 @@ func (q *QR) Render(width, height int) (image.Image, error) {
 }
 
 func Text(text string) (*QR, error) {
-	if err := validator.Struct(&struct {
+	if err := validate.Struct(&struct {
 		Text string `validate:"required,max=1024"`
 	}{
 		Text: text,
@@ -71,7 +72,7 @@ type WPA2Options struct {
 // WIFI generate QRCode for joining wifi network
 // enc: WEP|WPA|blank
 func WIFI(ssid string, auth WiFiAuth, password string, hidden *bool, wpa2 WPA2Options) (*QR, error) {
-	if err := validator.Struct(&struct {
+	if err := validate.Struct(&struct {
 		SSID        *string      `validate:"max=20"`
 		Password    *string      `validate:"max=20"`
 		Hidden      *bool        `validate:"omitempty"`
@@ -88,7 +89,7 @@ func WIFI(ssid string, auth WiFiAuth, password string, hidden *bool, wpa2 WPA2Op
 	var hiddenStr string
 
 	if hidden != nil {
-		hiddenStr = fx.Ternary(*hidden, "true", "false")
+		hiddenStr = goxp.Ternary(*hidden, "true", "false")
 	}
 
 	values := types.NewOrderedMap[string, string]()
@@ -172,7 +173,7 @@ func (addr *Address) String() string {
 		return ""
 	}
 
-	street := fx.Ternary(addr.Street2 == "", addr.Street, addr.Street+"\n"+addr.Street2)
+	street := goxp.Ternary(addr.Street2 == "", addr.Street, addr.Street+"\n"+addr.Street2)
 	return strings.Join([]string{"", "", street, addr.City, addr.Province, addr.PostCode, addr.CountryOrRegion}, ";")
 }
 
@@ -190,7 +191,7 @@ func setField(vc vcard.Card, key, value string) {
 }
 
 func Contact(card *Card) (*QR, error) {
-	if err := validator.Struct(card); err != nil {
+	if err := validate.Struct(card); err != nil {
 		return nil, err
 	}
 

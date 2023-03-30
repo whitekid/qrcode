@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/stretchr/testify/require"
-	"github.com/whitekid/goxp/fx"
+	"github.com/whitekid/goxp"
 	"gopkg.in/yaml.v3"
 )
 
@@ -70,7 +70,7 @@ func TestEventEncode(t *testing.T) {
 				Summary:    example.Event.SUMMARY,
 				Comment:    example.Event.COMMENT,
 				Class:      example.Event.CLASS,
-				Categories: fx.Ternary(example.Event.CATEGORIES != "", strings.Split(example.Event.CATEGORIES, ","), nil),
+				Categories: goxp.Ternary(example.Event.CATEGORIES != "", strings.Split(example.Event.CATEGORIES, ","), nil),
 				RRule:      example.Event.RRULE,
 				Transp:     example.Event.TRANSP,
 			}

@@ -10,7 +10,6 @@ import (
 	"github.com/emersion/go-vcard"
 	"github.com/stretchr/testify/require"
 	"github.com/whitekid/goxp"
-	"github.com/whitekid/goxp/fx"
 
 	"qrcodeapi/pkg/ical"
 )
@@ -186,7 +185,7 @@ func TestWifi(t *testing.T) {
 }
 
 // TODO move to goxp
-func NoError1[T1 any](t *testing.T, v fx.Tuple2[T1, error]) T1 {
+func NoError1[T1 any](t *testing.T, v goxp.Tuple2[T1, error]) T1 {
 	require.NoError(t, v.V2)
 	return v.V1
 }
@@ -198,8 +197,8 @@ func FuzzWifi(f *testing.F) {
 			t.Skip()
 		}
 
-		q := NoError1(t, fx.T2(WIFI(ssid, AuthNone, password, nil, WPA2Options{})))
-		NoError1(t, fx.T2((q.Render(200, 200))))
+		q := NoError1(t, goxp.T2(WIFI(ssid, AuthNone, password, nil, WPA2Options{})))
+		NoError1(t, goxp.T2((q.Render(200, 200))))
 	})
 }
 
