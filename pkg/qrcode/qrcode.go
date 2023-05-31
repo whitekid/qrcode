@@ -3,7 +3,7 @@ package qrcode
 import (
 	"fmt"
 	"image"
-	"strings"
+	"strings" 
 
 	"github.com/emersion/go-vcard"
 	"github.com/makiuchi-d/gozxing"
