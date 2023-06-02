@@ -158,7 +158,7 @@ func parseDuration(s string) (d Duration, err error) {
 		}
 
 		if !('0' <= s[0] && s[0] <= '9') {
-			log.Debugf("digit required: %s, %s", s, orig)
+			log.Debugf("digit required: %s, %s, %v", s, orig)
 			return d, fmt.Errorf("invalid duration: %s", orig)
 		}
 		v := 0

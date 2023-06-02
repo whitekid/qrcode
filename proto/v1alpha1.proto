@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package api.v1alpha1;
+option go_package = "qrcodeapi/proto";
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/wrappers.proto";
+
+service QRCode {
+  rpc version(google.protobuf.Empty) returns (google.protobuf.StringValue);
+
+  rpc generate(Request) returns (Response);
+}
+
+message Request {
+  string content = 1;
+  string url = 2;
+  int32 width = 3;
+  int32 height = 4;
+  string accept = 5;
+}
+
+message Response {
+  string content_type = 1;
+  int32 width = 2;
+  int32 height = 3;
+  bytes image = 4;
+}
