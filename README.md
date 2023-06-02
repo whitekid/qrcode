@@ -6,39 +6,39 @@ Just simple QRCode API Service
 
 ### Text
 
-![TEXT](https://qrcodeapi.woosum.net/api/v1/qrcode?content=HELLO)
+![TEXT](https://qrcode.woosum.net/api/v1/qrcode?content=HELLO)
 
-<https://qrcodeapi.woosum.net/api/v1/qrcode?content=HELLO>
+<https://qrcode.woosum.net/api/v1/qrcode?content=HELLO>
 
 ### URL
 
 with content:
 
-![URL](https://qrcodeapi.woosum.net/api/v1/qrcode?content=https://github.com)
+![URL](https://qrcode.woosum.net/api/v1/qrcode?content=https://github.com)
 
-<https://qrcodeapi.woosum.net/api/v1/qrcode?content=https://github.com>
+<https://qrcode.woosum.net/api/v1/qrcode?content=https://github.com>
 
 with url:
 
-![URL](https://qrcodeapi.woosum.net/api/v1/qrcode?url=github.com)
+![URL](https://qrcode.woosum.net/api/v1/qrcode?url=github.com)
 
-<https://qrcodeapi.woosum.net/api/v1/qrcode?url=github.com>
+<https://qrcode.woosum.net/api/v1/qrcode?url=github.com>
 
 ### Join WIFI
 
-![WIFI](https://qrcodeapi.woosum.net/api/v1/qrcode?ssid=MySSID&auth=WPA&pass=mypassword)
+![WIFI](https://qrcode.woosum.net/api/v1/qrcode?ssid=MySSID&auth=WPA&pass=mypassword)
 
-<https://qrcodeapi.woosum.net/api/v1/qrcode?ssid=MySSID&auth=WPA&pass=mypassword>
+<https://qrcode.woosum.net/api/v1/qrcode?ssid=MySSID&auth=WPA&pass=mypassword>
 
 ### Contact
 
-![Contact](https://qrcodeapi.woosum.net/api/v1/contact?name[last]=Choe&name[first]=Cheng%20Dae)
+![Contact](https://qrcode.woosum.net/api/v1/contact?name[last]=Choe&name[first]=Cheng%20Dae)
 
-<https://qrcodeapi.woosum.net/api/v1/contact?name[last]=Choe&name[first]=Cheng20Dae>
+<https://qrcode.woosum.net/api/v1/contact?name[last]=Choe&name[first]=Cheng20Dae>
 
 #### with vcard
 
-    curl -X POST https://qrcodeapi.woosum.net/api/v1/vcard \
+    curl -X POST https://qrcode.woosum.net/api/v1/vcard \
         -H "content-type: text/vcard" \
         -H "accept: image/png" \
         -d "BEGIN:VCARD
@@ -51,7 +51,7 @@ with url:
 
 ### Event
 
-    curl -X POST https://qrcodeapi.woosum.net/api/v1/vevent \
+    curl -X POST https://qrcode.woosum.net/api/v1/vevent \
         -H "content-type: text/vevent" \
         -H "accept: image/png" \
         -d "BEGIN:VEVENT
