@@ -38,7 +38,7 @@ func TestText(t *testing.T) {
 
 			ts := testutils.NewTestServer(ctx, NewAPIv1())
 
-			req := request.Get("%s/qrcode", ts.URL).Query("content", tt.args.text)
+			req := request.Get("%s/api/v1/qrcode", ts.URL).Query("content", tt.args.text)
 
 			resp, err := req.Do(ctx)
 			require.NoError(t, err)
@@ -85,7 +85,7 @@ func TestAccept(t *testing.T) {
 
 			ts := testutils.NewTestServer(ctx, NewAPIv1())
 
-			req := request.Get("%s/qrcode", ts.URL).Query("content", "hello world")
+			req := request.Get("%s/api/v1/qrcode", ts.URL).Query("content", "hello world")
 
 			if tt.args.accept != "" {
 				req = req.Header(echo.HeaderAccept, tt.args.accept)
@@ -139,7 +139,7 @@ func TestSize(t *testing.T) {
 
 			ts := testutils.NewTestServer(ctx, NewAPIv1())
 
-			req := request.Get("%s/qrcode", ts.URL).Query("content", "hello world")
+			req := request.Get("%s/api/v1/qrcode", ts.URL).Query("content", "hello world")
 
 			if tt.args.width > 0 {
 				req = req.Query("w", strconv.FormatInt(int64(tt.args.width), 10))
@@ -169,7 +169,7 @@ func TestURL(t *testing.T) {
 
 	ts := testutils.NewTestServer(ctx, NewAPIv1())
 
-	resp, err := request.Get("%s/qrcode", ts.URL).
+	resp, err := request.Get("%s/api/v1/qrcode", ts.URL).
 		Query("url", "google.com").Do(ctx)
 	require.NoError(t, err)
 	require.True(t, resp.Success())
@@ -200,7 +200,7 @@ func TestWifi(t *testing.T) {
 		wantErr    bool
 		wantStatus int
 	}{
-		{"empty ssid", args{map[string]string{
+		{"empty auth", args{map[string]string{
 			"ssid": "myssid",
 		}, ""}, false, http.StatusBadRequest},
 		{"valid", args{map[string]string{
@@ -216,7 +216,7 @@ func TestWifi(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			resp, err := request.Get("%s/qrcode", ts.URL).Queries(tt.arg.query).Do(ctx)
+			resp, err := request.Get("%s/api/v1/qrcode", ts.URL).Queries(tt.arg.query).Do(ctx)
 			if (err != nil) != tt.wantErr {
 				require.Failf(t, `wifi request failed`, `error = %v, wantErr = %v`, err, tt.wantErr)
 			}
@@ -249,7 +249,7 @@ func TestContact(t *testing.T) {
 
 	ts := testutils.NewTestServer(ctx, NewAPIv1())
 
-	resp, err := request.Get("%s/contact", ts.URL).
+	resp, err := request.Get("%s/api/v1/contact", ts.URL).
 		Query("name[first]", "firstname").
 		Query("name[last]", "lastname").
 		Do(ctx)
@@ -270,7 +270,7 @@ VERSION:4.0
 N:lastname;firstname;;;
 END:VCARD`
 
-	resp, err := request.Post("%s/vcard", ts.URL).
+	resp, err := request.Post("%s/api/v1/vcard", ts.URL).
 		ContentType(mimeVCard).
 		Body(strings.NewReader(content)).
 		Do(ctx)
@@ -299,7 +299,7 @@ DTSTART:20180601T070000Z
 DTEND:20180831T070000Z
 END:VEVENT`
 
-	resp, err := request.Post("%s/vevent", ts.URL).
+	resp, err := request.Post("%s/api/v1/vevent", ts.URL).
 		ContentType(mimeVEvent).
 		Body(strings.NewReader(content)).
 		Do(ctx)

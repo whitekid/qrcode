@@ -4,12 +4,12 @@ import (
 	"context"
 	"net/http/httptest"
 
-	"qrcodeapi/pkg/helper/echox"
+	"github.com/whitekid/echox"
 )
 
 func NewTestServer(ctx context.Context, r echox.Router) *httptest.Server {
 	e := echox.New()
-	r.Route(e, "")
+	e.Route(nil, r)
 
 	ts := httptest.NewServer(e)
 	go func() {

@@ -11,10 +11,10 @@ import (
 	"github.com/chai2010/webp"
 	"github.com/emersion/go-vcard"
 	"github.com/labstack/echo/v4"
+	"github.com/whitekid/echox"
+	"github.com/whitekid/goxp"
 	"github.com/whitekid/goxp/request"
 
-	"qrcodeapi/pkg/helper"
-	"qrcodeapi/pkg/helper/echox"
 	"qrcodeapi/pkg/ical"
 	"qrcodeapi/pkg/qrcode"
 )
@@ -25,13 +25,14 @@ var _ echox.Router = (*APIv1)(nil)
 
 func NewAPIv1() echox.Router { return &APIv1{} }
 
-func (api *APIv1) Route(e *echox.Echo, path string) {
-	v1 := e.Group(path)
+func (api *APIv1) Name() string { return "api v1" }
+func (api *APIv1) Path() string { return "/api/v1" }
 
-	v1.GET("/qrcode", api.handleGenerate)
-	v1.GET("/contact", api.handleContact)
-	v1.POST("/vcard", api.handleContactVCard)
-	v1.POST("/vevent", api.handleVEvent)
+func (api *APIv1) Route(g *echo.Group) {
+	g.GET("/qrcode", api.handleGenerate)
+	g.GET("/contact", api.handleContact)
+	g.POST("/vcard", api.handleContactVCard)
+	g.POST("/vevent", api.handleVEvent)
 }
 
 type RenderRequest struct {
@@ -43,8 +44,8 @@ type RenderRequest struct {
 func (api *APIv1) renderQRCode(c echo.Context, in *qrcode.QR) error {
 	// NOTE c.Bind()는 Post에서 동작하지 않음
 	req := &RenderRequest{
-		W:         helper.ParseIntDef(c.QueryParam("w"), 200, 21, 200),
-		H:         helper.ParseIntDef(c.QueryParam("h"), 200, 21, 200),
+		W:         goxp.ParseIntDef(c.QueryParam("w"), 200, 21, 200),
+		H:         goxp.ParseIntDef(c.QueryParam("h"), 200, 21, 200),
 		ImageType: c.Request().Header.Get(echo.HeaderAccept),
 	}
 
@@ -70,15 +71,13 @@ func (api *APIv1) renderQRCode(c echo.Context, in *qrcode.QR) error {
 	return echo.ErrUnsupportedMediaType
 }
 
-type GenerateRequest struct {
-	Content string `query:"content"`
-	URL     string `query:"url"`
-	SSID    string `query:"ssid"`
-}
-
 func (api *APIv1) handleGenerate(c echo.Context) error {
-	req := &GenerateRequest{}
-	if err := c.Bind(req); err != nil {
+	req := &struct {
+		Content string `query:"content"`
+		URL     string `query:"url"`
+		SSID    string `query:"ssid"`
+	}{}
+	if err := echox.Bind(c, req); err != nil {
 		return err
 	}
 
@@ -104,24 +103,19 @@ func (api *APIv1) handleGenerate(c echo.Context) error {
 	return echo.NewHTTPError(http.StatusBadRequest)
 }
 
-type WIFIRequest struct {
-	SSID   string `query:"ssid" validate:"required"`
-	Auth   string `query:"auth" validate:"required"`
-	Pass   string `query:"pass"`
-	Hidden string `query:"hidden"`
-	EAP    string `query:"eap"`
-	AnonID string `query:"anon"`
-	Ident  string `query:"ident"`
-	PH2    string `query:"ph2"`
-}
-
 func (api *APIv1) handleWifi(c echo.Context) error {
-	req := &WIFIRequest{}
-	if err := c.Bind(req); err != nil {
-		return err
-	}
+	req := &struct {
+		SSID   string `query:"ssid" validate:"required"`
+		Auth   string `query:"auth" validate:"required"`
+		Pass   string `query:"pass"`
+		Hidden string `query:"hidden"`
+		EAP    string `query:"eap"`
+		AnonID string `query:"anon"`
+		Ident  string `query:"ident"`
+		PH2    string `query:"ph2"`
+	}{}
 
-	if err := c.Validate(req); err != nil {
+	if err := echox.Bind(c, req); err != nil {
 		return err
 	}
 
@@ -149,55 +143,50 @@ func (api *APIv1) handleWifi(c echo.Context) error {
 	return api.renderQRCode(c, qr)
 }
 
-type ContactRequest struct {
-	FirstName  string `query:"name[first]"`
-	LastName   string `query:"name[last]"`
-	MiddleName string `query:"name[middle]"`
-
-	Company    string `query:"company"`
-	Department string `query:"department"`
-	JobTitle   string `query:"title"`
-
-	Email     string `query:"email"`
-	EmailHome string `query:"email[home]"`
-	EmailWork string `query:"email[work]"`
-
-	Tel     string `query:"tel"`
-	TelHome string `query:"tel[home]"`
-	TelWork string `query:"tel[work]"`
-	Mobile  string `query:"mobile"`
-	Pager   string `query:"pager"`
-
-	FaxHome string `query:"fax[home]"`
-	FaxWork string `query:"fax[work]"`
-
-	HomeAddr struct {
-		PostCode        string `query:"addr[home][postcode]"`
-		CountryOrRegion string `query:"addr[home][country]"`
-		Province        string `query:"addr[home][province]"`
-		City            string `query:"addr[home][city]"`
-		Street          string `query:"addr[home][street]"`
-		Street2         string `query:"addr[home][street2]"`
-	} `validate:"dive"`
-	WorkAddr struct {
-		PostCode        string `query:"addr[work][postcode]"`
-		CountryOrRegion string `query:"addr[work][country]"`
-		Province        string `query:"addr[work][province]"`
-		City            string `query:"addr[work][city]"`
-		Street          string `query:"addr[work][street]"`
-		Street2         string `query:"addr[work][street2]"`
-	} `validate:"dive"`
-
-	Note string `query:"note"`
-}
-
 func (api *APIv1) handleContact(c echo.Context) error {
-	req := &ContactRequest{}
-	if err := c.Bind(req); err != nil {
-		return err
-	}
+	req := &struct {
+		FirstName  string `query:"name[first]"`
+		LastName   string `query:"name[last]"`
+		MiddleName string `query:"name[middle]"`
 
-	if err := c.Validate(req); err != nil {
+		Company    string `query:"company"`
+		Department string `query:"department"`
+		JobTitle   string `query:"title"`
+
+		Email     string `query:"email"`
+		EmailHome string `query:"email[home]"`
+		EmailWork string `query:"email[work]"`
+
+		Tel     string `query:"tel"`
+		TelHome string `query:"tel[home]"`
+		TelWork string `query:"tel[work]"`
+		Mobile  string `query:"mobile"`
+		Pager   string `query:"pager"`
+
+		FaxHome string `query:"fax[home]"`
+		FaxWork string `query:"fax[work]"`
+
+		HomeAddr struct {
+			PostCode        string `query:"addr[home][postcode]"`
+			CountryOrRegion string `query:"addr[home][country]"`
+			Province        string `query:"addr[home][province]"`
+			City            string `query:"addr[home][city]"`
+			Street          string `query:"addr[home][street]"`
+			Street2         string `query:"addr[home][street2]"`
+		} `validate:"dive"`
+		WorkAddr struct {
+			PostCode        string `query:"addr[work][postcode]"`
+			CountryOrRegion string `query:"addr[work][country]"`
+			Province        string `query:"addr[work][province]"`
+			City            string `query:"addr[work][city]"`
+			Street          string `query:"addr[work][street]"`
+			Street2         string `query:"addr[work][street2]"`
+		} `validate:"dive"`
+
+		Note string `query:"note"`
+	}{}
+
+	if err := echox.Bind(c, req); err != nil {
 		return err
 	}
 

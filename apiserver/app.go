@@ -5,14 +5,15 @@ import (
 	"net/http"
 
 	openapimiddleware "github.com/go-openapi/runtime/middleware"
-	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
+	"github.com/whitekid/echox"
 	"github.com/whitekid/goxp/log"
 	"github.com/whitekid/goxp/service"
+	"golang.org/x/time/rate"
 
 	"qrcodeapi/apiserver/apiv1"
 	"qrcodeapi/config"
-	"qrcodeapi/pkg/helper/echox"
 )
 
 func Run(ctx context.Context) error { return New().Serve(ctx) }
@@ -38,28 +39,25 @@ func (s *qrcodeService) Serve(ctx context.Context) error {
 		Path:    "swagger-ui",
 		SpecURL: "/swagger.json",
 	}, e)
-	e.File("/swagger.json", "cadl/cadl-output/@cadl-lang/openapi3/openapi.json")
+	e.File("/swagger.json", "spec/tsp-output/@typespec/openapi3/openapi.json")
 
 	return http.ListenAndServe(config.BindAddr(), h)
 }
 
-type Validator struct {
-	validator *validator.Validate
-}
-
-func (v *Validator) Validate(i interface{}) error {
-	if err := v.validator.Struct(i); err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
-	}
-	return nil
-}
-
 func (s *qrcodeService) setup() *echox.Echo {
-	e := echox.New()
+	e := echox.New(
+		middleware.RateLimiter(middleware.NewRateLimiterMemoryStore(rate.Limit(config.RateLimit()))),
+		middleware.CORS(),
+	)
+
 	e.GET("/", func(c echo.Context) error {
-		return c.Redirect(http.StatusFound, "https://github.com/whitekid/qrcodeapi")
+		return c.Redirect(http.StatusFound, "https://github.com/whitekid/qrcode")
 	})
-	apiv1.NewAPIv1().Route(e, "/api/v1")
+	e.Route(nil, apiv1.NewAPIv1())
+
+	for _, r := range e.Routes() {
+		log.Debugf("%s %s => %s", r.Method, r.Path, r.Name)
+	}
 
 	return e
 }
