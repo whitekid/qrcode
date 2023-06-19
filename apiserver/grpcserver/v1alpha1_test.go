@@ -80,7 +80,7 @@ func TestGenerate(t *testing.T) {
 
 			img, err := png.Decode(bytes.NewReader(got.Image))
 			require.NoError(t, err)
-			require.Equal(t, 29, img.Bounds().Dx())
+			require.Equal(t, 200, img.Bounds().Dx())
 		})
 	}
 }
