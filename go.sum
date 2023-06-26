@@ -333,8 +333,8 @@ github.com/valyala/bytebufferpool v1.0.0/go.mod h1:6bBcMArwyJ5K/AmCkWv1jt77kVWyC
 github.com/valyala/fasttemplate v1.2.1/go.mod h1:KHLXt3tVN2HBp8eijSv/kGJopbvo7S+qRAEEKiv+SiQ=
 github.com/valyala/fasttemplate v1.2.2 h1:lxLXG0uE3Qnshl9QyaK6XJxMXlQZELvChBOCmQD0Loo=
 github.com/valyala/fasttemplate v1.2.2/go.mod h1:KHLXt3tVN2HBp8eijSv/kGJopbvo7S+qRAEEKiv+SiQ=
-github.com/whitekid/cobrax v0.0.0-20230508004707-3816a2ef4a8d h1:v/PW4m/srAJcD8TFckyz97T4lyzWf3z900GePAGmGc8=
-github.com/whitekid/cobrax v0.0.0-20230508004707-3816a2ef4a8d/go.mod h1:VyAslbFnnNqXaqVVhr9LWtUjn2IqRciHUrcBU8i4H7k=
+github.com/whitekid/cobrax v0.0.0-20230622014136-6c4cd51b4424 h1:0BwItfGoEIFUkm5KDsFHTFIVZCojGcryLsT/6LmU20Y=
+github.com/whitekid/cobrax v0.0.0-20230622014136-6c4cd51b4424/go.mod h1:1dGD0fftQIo2uDQz6Hz/HOtwZeR1spGf7Ki7h6X1QU8=
 github.com/whitekid/echox v0.0.0-20230619020910-59b04301a0c4 h1:6D7LwKV44Wp7UqIW54LYqIpHgzxcuxRxWlkgeEovAK0=
 github.com/whitekid/echox v0.0.0-20230619020910-59b04301a0c4/go.mod h1:BwcLchVeAoIx/qBeNm256SAwp+++5DwmGKdz9xJC3+Y=
 github.com/whitekid/goxp v0.0.0-20230619020524-d044720a3de5 h1:BKrqaNkLNL7OTvfbufWXXHivB7v8kL1IQYJIsZTGdRo=
@@ -686,8 +686,8 @@ google.golang.org/grpc v1.31.1/go.mod h1:N36X2cJ7JwdamYAgDz+s+rVMFjt3numwzf/HckM
 google.golang.org/grpc v1.33.2/go.mod h1:JMHMWHQWaTccqQQlmk3MJZS+GWXOdAesneDmEnv2fbc=
 google.golang.org/grpc v1.34.0/go.mod h1:WotjhfgOW/POjDeRt8vscBtXq+2VjORFy659qA51WJ8=
 google.golang.org/grpc v1.35.0/go.mod h1:qjiiYl8FncCW8feJPdyg3v6XW24KsRHe+dy9BAGRRjU=
-google.golang.org/grpc v1.56.0 h1:+y7Bs8rtMd07LeXmL3NxcTLn7mUkbKZqEpPhMNkwJEE=
-google.golang.org/grpc v1.56.0/go.mod h1:I9bI3vqKfayGqPUAwGdOSu7kt6oIJLixfffKrpXqQ9s=
+google.golang.org/grpc v1.56.1 h1:z0dNfjIl0VpaZ9iSVjA6daGatAYwPGstTjt5vkRMFkQ=
+google.golang.org/grpc v1.56.1/go.mod h1:I9bI3vqKfayGqPUAwGdOSu7kt6oIJLixfffKrpXqQ9s=
 google.golang.org/protobuf v0.0.0-20200109180630-ec00e32a8dfd/go.mod h1:DFci5gLYBciE7Vtevhsrf46CRTquxDuWsQurQQe4oz8=
 google.golang.org/protobuf v0.0.0-20200221191635-4d8936d0db64/go.mod h1:kwYJMbMJ01Woi6D6+Kah6886xMZcty6N08ah7+eCXa0=
 google.golang.org/protobuf v0.0.0-20200228230310-ab0ca4ff8a60/go.mod h1:cfTl7dwQJ+fmap5saPgwCLgHXTUD7jkjRqWcaiX5VyM=
