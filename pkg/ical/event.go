@@ -227,7 +227,7 @@ func (enc *eventEncoder) Encode(v any) error {
 	}
 
 	fmt.Fprintf(enc.w, "BEGIN:VEVENT\r\n")
-	if err := enc.writeFields([]goxp.Tuple2[string, any]{
+	if err := enc.writeFields([]*goxp.Tuple2[string, any]{
 		{"CLASS", evt.Class},
 		{"CREATED", evt.Created},
 		{"DESCRIPTION", evt.Description},
@@ -268,7 +268,7 @@ func (enc *eventEncoder) Encode(v any) error {
 	return nil
 }
 
-func (enc *eventEncoder) writeFields(values []goxp.Tuple2[string, any]) (err error) {
+func (enc *eventEncoder) writeFields(values []*goxp.Tuple2[string, any]) (err error) {
 	for _, value := range values {
 		if err := enc.writeField(value.V1, value.V2); err != nil {
 			return err

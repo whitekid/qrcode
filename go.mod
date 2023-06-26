@@ -8,7 +8,6 @@ require (
 	github.com/chai2010/webp v0.0.0-00010101000000-000000000000
 	github.com/emersion/go-vcard v0.0.0-20230331202150-f3d26859ccd3
 	github.com/go-openapi/runtime v0.26.0
-	github.com/go-playground/validator/v10 v10.14.1
 	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0
 	github.com/labstack/echo/v4 v4.10.2
 	github.com/makiuchi-d/gozxing v0.1.1
@@ -17,13 +16,13 @@ require (
 	github.com/spf13/pflag v1.0.5
 	github.com/spf13/viper v1.16.0
 	github.com/stretchr/testify v1.8.4
-	github.com/whitekid/cobrax v0.0.0-20230508004707-3816a2ef4a8d
+	github.com/whitekid/cobrax v0.0.0-20230622014136-6c4cd51b4424
 	github.com/whitekid/echox v0.0.0-20230619020910-59b04301a0c4
 	github.com/whitekid/goxp v0.0.0-20230619020524-d044720a3de5
 	github.com/whitekid/iter v0.0.0-20230330031517-b94e3cac3e59
 	go.uber.org/zap v1.24.0
 	golang.org/x/time v0.3.0
-	google.golang.org/grpc v1.56.0
+	google.golang.org/grpc v1.56.1
 	google.golang.org/protobuf v1.30.0
 	gopkg.in/yaml.v3 v3.0.1
 )
@@ -44,6 +43,7 @@ require (
 	github.com/go-openapi/validate v0.22.1 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
+	github.com/go-playground/validator/v10 v10.14.1 // indirect
 	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
