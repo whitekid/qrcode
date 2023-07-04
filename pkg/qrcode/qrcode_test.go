@@ -192,8 +192,8 @@ func FuzzWifi(f *testing.F) {
 			t.Skip()
 		}
 
-		q := testx.NoError(t, goxp.T2(WIFI(ssid, AuthNone, password, nil, WPA2Options{})))
-		testx.NoError(t, goxp.T2((q.Render(200, 200))))
+		q := testx.NoError1(t, goxp.T2(WIFI(ssid, AuthNone, password, nil, WPA2Options{})))
+		testx.NoError1(t, goxp.T2((q.Render(200, 200))))
 	})
 }
 

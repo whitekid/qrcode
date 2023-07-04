@@ -43,7 +43,7 @@ func TestText(t *testing.T) {
 			resp, err := req.Do(ctx)
 			require.NoError(t, err)
 			defer resp.Body.Close()
-			require.Truef(t, resp.Success(), "failed with status %v", resp.StatusCode)
+			require.NoErrorf(t, resp.Success(), "failed with status %v", resp.StatusCode)
 
 			img, _, err := image.Decode(resp.Body)
 			require.NoError(t, err)
@@ -96,7 +96,7 @@ func TestAccept(t *testing.T) {
 			defer resp.Body.Close()
 
 			require.Equalf(t, tt.wantStatus, resp.StatusCode, "status not equals: want=%v, got=%v", tt.wantStatus, resp.StatusCode)
-			if !resp.Success() {
+			if err := resp.Success(); err != nil {
 				return
 			}
 
@@ -172,7 +172,7 @@ func TestURL(t *testing.T) {
 	resp, err := request.Get("%s/api/v1/qrcode", ts.URL).
 		Query("url", "google.com").Do(ctx)
 	require.NoError(t, err)
-	require.True(t, resp.Success())
+	require.NoError(t, resp.Success())
 
 	require.Equal(t, "image/png", resp.Header.Get(request.HeaderContentType))
 
@@ -225,11 +225,11 @@ func TestWifi(t *testing.T) {
 			}
 
 			require.Equalf(t, tt.wantStatus, resp.StatusCode, "status=%d, wantCode=%d", resp.StatusCode, tt.wantStatus)
-			if !resp.Success() {
+			if err := resp.Success(); err != nil {
 				return
 			}
 
-			require.Truef(t, resp.Success(), "failed with status %s", resp.Status)
+			require.NoErrorf(t, resp.Success(), "failed with status %s", resp.Status)
 			require.Equal(t, "image/png", resp.Header.Get(request.HeaderContentType))
 
 			defer resp.Body.Close()
@@ -254,7 +254,7 @@ func TestContact(t *testing.T) {
 		Query("name[last]", "lastname").
 		Do(ctx)
 	require.NoError(t, err)
-	require.True(t, resp.Success())
+	require.NoError(t, resp.Success())
 
 	require.Equal(t, "image/png", resp.Header.Get(request.HeaderContentType))
 }
@@ -275,7 +275,7 @@ END:VCARD`
 		Body(strings.NewReader(content)).
 		Do(ctx)
 	require.NoError(t, err)
-	require.True(t, resp.Success(), "failed with status %d: %s", resp.StatusCode, resp.Status)
+	require.NoErrorf(t, resp.Success(), "failed with status %d: %s", resp.StatusCode, resp.Status)
 
 	require.Equal(t, "image/png", resp.Header.Get(request.HeaderContentType))
 	defer resp.Body.Close()
@@ -304,7 +304,7 @@ END:VEVENT`
 		Body(strings.NewReader(content)).
 		Do(ctx)
 	require.NoError(t, err)
-	require.True(t, resp.Success(), "failed with status %d: %s", resp.StatusCode, resp.Status)
+	require.NoErrorf(t, resp.Success(), "failed with status %d: %s", resp.StatusCode, resp.Status)
 	require.Equal(t, "image/png", resp.Header.Get(request.HeaderContentType))
 
 	defer resp.Body.Close()

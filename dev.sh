@@ -27,4 +27,3 @@ cmd=$1
 shift
 
 _do_${cmd} @$
-
