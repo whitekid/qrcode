@@ -24,7 +24,7 @@ func TestApp(t *testing.T) {
 
 	resp, err := request.Get("http://%s/api/v1/qrcode?content=HELLO", addr).Do(ctx)
 	require.NoError(t, err)
-	require.True(t, resp.Success(), "failed with status %d", resp.StatusCode)
+	require.NoErrorf(t, resp.Success(), "failed with status %d", resp.StatusCode)
 
 	require.Equal(t, "image/png", resp.Header.Get(echo.HeaderContentType))
 }

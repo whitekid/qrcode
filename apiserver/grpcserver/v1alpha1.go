@@ -41,8 +41,8 @@ func (s *v1alpha1ServiceImpl) Generate(ctx context.Context, in *proto.Request) (
 	width := goxp.Ternary(in.Width < 20, 200, int(in.Width))
 	height := goxp.Ternary(in.Width < 20, 200, int(in.Height))
 
-	width = fx.Min(fx.Of(fx.Max(fx.Of(20, width)), 200))
-	height = fx.Min(fx.Of(fx.Max(fx.Of(20, height)), 200))
+	width = fx.Min(fx.Max(20, width), 200)
+	height = fx.Min(fx.Max(20, height), 200)
 
 	img, err := q.Render(width, height)
 	if err != nil {
