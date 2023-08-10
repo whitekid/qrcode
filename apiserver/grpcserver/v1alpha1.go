@@ -10,7 +10,6 @@ import (
 
 	"github.com/chai2010/webp"
 	"github.com/whitekid/goxp"
-	"github.com/whitekid/goxp/fx"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
@@ -41,8 +40,8 @@ func (s *v1alpha1ServiceImpl) Generate(ctx context.Context, in *proto.Request) (
 	width := goxp.Ternary(in.Width < 20, 200, int(in.Width))
 	height := goxp.Ternary(in.Width < 20, 200, int(in.Height))
 
-	width = fx.Min(fx.Max(20, width), 200)
-	height = fx.Min(fx.Max(20, height), 200)
+	width = min(max(20, width), 200)
+	height = min(max(20, height), 200)
 
 	img, err := q.Render(width, height)
 	if err != nil {

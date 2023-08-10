@@ -1,6 +1,6 @@
 module qrcodeapi
 
-go 1.20
+go 1.21.0
 
 replace github.com/chai2010/webp => github.com/chai2010/webp v1.1.2-0.20220219151144-e81c7511b15a
 
@@ -18,7 +18,7 @@ require (
 	github.com/stretchr/testify v1.8.4
 	github.com/whitekid/cobrax v0.0.0-20230727025756-7a6374dddc5a
 	github.com/whitekid/echox v0.0.0-20230717010146-1a326f8ff018
-	github.com/whitekid/goxp v0.0.0-20230803113103-cb3e9964e00a
+	github.com/whitekid/goxp v0.0.0-20230809112138-13921948b77c
 	github.com/whitekid/iter v0.0.0-20230727022917-a28e6cf0ed40
 	go.uber.org/zap v1.25.0
 	golang.org/x/time v0.3.0
@@ -43,7 +43,7 @@ require (
 	github.com/go-openapi/validate v0.22.1 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
-	github.com/go-playground/validator/v10 v10.14.1 // indirect
+	github.com/go-playground/validator/v10 v10.15.0 // indirect
 	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
@@ -68,12 +68,12 @@ require (
 	github.com/valyala/fasttemplate v1.2.2 // indirect
 	go.mongodb.org/mongo-driver v1.11.3 // indirect
 	go.uber.org/multierr v1.10.0 // indirect
-	golang.org/x/crypto v0.11.0 // indirect
-	golang.org/x/exp v0.0.0-20230801115018-d63ba01acd4b // indirect
-	golang.org/x/net v0.13.0 // indirect
+	golang.org/x/crypto v0.12.0 // indirect
+	golang.org/x/exp v0.0.0-20230809094429-853ea248256d // indirect
+	golang.org/x/net v0.14.0 // indirect
 	golang.org/x/sync v0.3.0 // indirect
-	golang.org/x/sys v0.10.0 // indirect
-	golang.org/x/text v0.11.0 // indirect
+	golang.org/x/sys v0.11.0 // indirect
+	golang.org/x/text v0.12.0 // indirect
 	golang.org/x/xerrors v0.0.0-20220907171357-04be3eba64a2 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20230525234030-28d5490b6b19 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
