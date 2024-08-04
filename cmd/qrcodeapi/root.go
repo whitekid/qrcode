@@ -5,7 +5,6 @@ import (
 	"github.com/whitekid/goxp/log"
 
 	"qrcodeapi/apiserver"
-	"qrcodeapi/config"
 )
 
 var rootCmd = &cobra.Command{
@@ -20,5 +19,4 @@ var rootCmd = &cobra.Command{
 }
 
 func init() {
-	config.InitFlagSet(rootCmd.Use, rootCmd.Flags())
 }

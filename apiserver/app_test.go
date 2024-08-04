@@ -9,7 +9,7 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/require"
-	"github.com/whitekid/goxp/request"
+	"github.com/whitekid/goxp/requests"
 )
 
 func TestApp(t *testing.T) {
@@ -22,7 +22,7 @@ func TestApp(t *testing.T) {
 
 	addr := config.BindAddr()
 
-	resp, err := request.Get("http://%s/api/v1/qrcode?content=HELLO", addr).Do(ctx)
+	resp, err := requests.Get("http://%s/api/v1/qrcode?content=HELLO", addr).Do(ctx)
 	require.NoError(t, err)
 	require.NoErrorf(t, resp.Success(), "failed with status %d", resp.StatusCode)
 

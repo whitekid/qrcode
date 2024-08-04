@@ -11,7 +11,7 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/require"
-	"github.com/whitekid/goxp/request"
+	"github.com/whitekid/goxp/requests"
 
 	"qrcodeapi/pkg/ical"
 	"qrcodeapi/pkg/qrcode"
@@ -38,7 +38,7 @@ func TestText(t *testing.T) {
 
 			ts := testutils.NewTestServer(ctx, NewAPIv1())
 
-			req := request.Get("%s/api/v1/qrcode", ts.URL).Query("content", tt.args.text)
+			req := requests.Get("%s/api/v1/qrcode", ts.URL).Query("content", tt.args.text)
 
 			resp, err := req.Do(ctx)
 			require.NoError(t, err)
@@ -85,7 +85,7 @@ func TestAccept(t *testing.T) {
 
 			ts := testutils.NewTestServer(ctx, NewAPIv1())
 
-			req := request.Get("%s/api/v1/qrcode", ts.URL).Query("content", "hello world")
+			req := requests.Get("%s/api/v1/qrcode", ts.URL).Query("content", "hello world")
 
 			if tt.args.accept != "" {
 				req = req.Header(echo.HeaderAccept, tt.args.accept)
@@ -100,7 +100,7 @@ func TestAccept(t *testing.T) {
 				return
 			}
 
-			require.Equal(t, tt.wantContentType, resp.Header.Get(request.HeaderContentType))
+			require.Equal(t, tt.wantContentType, resp.Header.Get(requests.HeaderContentType))
 
 			img, s, err := image.Decode(resp.Body)
 
@@ -139,7 +139,7 @@ func TestSize(t *testing.T) {
 
 			ts := testutils.NewTestServer(ctx, NewAPIv1())
 
-			req := request.Get("%s/api/v1/qrcode", ts.URL).Query("content", "hello world")
+			req := requests.Get("%s/api/v1/qrcode", ts.URL).Query("content", "hello world")
 
 			if tt.args.width > 0 {
 				req = req.Query("w", strconv.FormatInt(int64(tt.args.width), 10))
@@ -169,12 +169,12 @@ func TestURL(t *testing.T) {
 
 	ts := testutils.NewTestServer(ctx, NewAPIv1())
 
-	resp, err := request.Get("%s/api/v1/qrcode", ts.URL).
+	resp, err := requests.Get("%s/api/v1/qrcode", ts.URL).
 		Query("url", "google.com").Do(ctx)
 	require.NoError(t, err)
 	require.NoError(t, resp.Success())
 
-	require.Equal(t, "image/png", resp.Header.Get(request.HeaderContentType))
+	require.Equal(t, "image/png", resp.Header.Get(requests.HeaderContentType))
 
 	defer resp.Body.Close()
 	img, _, err := image.Decode(resp.Body)
@@ -216,7 +216,7 @@ func TestWifi(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			resp, err := request.Get("%s/api/v1/qrcode", ts.URL).Queries(tt.arg.query).Do(ctx)
+			resp, err := requests.Get("%s/api/v1/qrcode", ts.URL).Queries(tt.arg.query).Do(ctx)
 			if (err != nil) != tt.wantErr {
 				require.Failf(t, `wifi request failed`, `error = %v, wantErr = %v`, err, tt.wantErr)
 			}
@@ -230,7 +230,7 @@ func TestWifi(t *testing.T) {
 			}
 
 			require.NoErrorf(t, resp.Success(), "failed with status %s", resp.Status)
-			require.Equal(t, "image/png", resp.Header.Get(request.HeaderContentType))
+			require.Equal(t, "image/png", resp.Header.Get(requests.HeaderContentType))
 
 			defer resp.Body.Close()
 			img, _, err := image.Decode(resp.Body)
@@ -249,14 +249,14 @@ func TestContact(t *testing.T) {
 
 	ts := testutils.NewTestServer(ctx, NewAPIv1())
 
-	resp, err := request.Get("%s/api/v1/contact", ts.URL).
+	resp, err := requests.Get("%s/api/v1/contact", ts.URL).
 		Query("name[first]", "firstname").
 		Query("name[last]", "lastname").
 		Do(ctx)
 	require.NoError(t, err)
 	require.NoError(t, resp.Success())
 
-	require.Equal(t, "image/png", resp.Header.Get(request.HeaderContentType))
+	require.Equal(t, "image/png", resp.Header.Get(requests.HeaderContentType))
 }
 
 func TestContactVCF(t *testing.T) {
@@ -270,14 +270,14 @@ VERSION:4.0
 N:lastname;firstname;;;
 END:VCARD`
 
-	resp, err := request.Post("%s/api/v1/vcard", ts.URL).
+	resp, err := requests.Post("%s/api/v1/vcard", ts.URL).
 		ContentType(mimeVCard).
 		Body(strings.NewReader(content)).
 		Do(ctx)
 	require.NoError(t, err)
 	require.NoErrorf(t, resp.Success(), "failed with status %d: %s", resp.StatusCode, resp.Status)
 
-	require.Equal(t, "image/png", resp.Header.Get(request.HeaderContentType))
+	require.Equal(t, "image/png", resp.Header.Get(requests.HeaderContentType))
 	defer resp.Body.Close()
 	img, _, err := image.Decode(resp.Body)
 	require.NoError(t, err)
@@ -299,13 +299,13 @@ DTSTART:20180601T070000Z
 DTEND:20180831T070000Z
 END:VEVENT`
 
-	resp, err := request.Post("%s/api/v1/vevent", ts.URL).
+	resp, err := requests.Post("%s/api/v1/vevent", ts.URL).
 		ContentType(mimeVEvent).
 		Body(strings.NewReader(content)).
 		Do(ctx)
 	require.NoError(t, err)
 	require.NoErrorf(t, resp.Success(), "failed with status %d: %s", resp.StatusCode, resp.Status)
-	require.Equal(t, "image/png", resp.Header.Get(request.HeaderContentType))
+	require.Equal(t, "image/png", resp.Header.Get(requests.HeaderContentType))
 
 	defer resp.Body.Close()
 	img, _, err := image.Decode(resp.Body)

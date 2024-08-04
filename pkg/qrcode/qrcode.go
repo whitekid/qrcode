@@ -76,7 +76,7 @@ func WIFI(ssid string, auth WiFiAuth, password string, hidden *bool, wpa2 WPA2Op
 		SSID        *string      `validate:"max=20"`
 		Password    *string      `validate:"max=20"`
 		Hidden      *bool        `validate:"omitempty"`
-		WPA2Options *WPA2Options `validate:"omitempty,dive"`
+		WPA2Options *WPA2Options `validate:"omitempty"`
 	}{
 		SSID:        &ssid,
 		Password:    &password,
@@ -147,8 +147,8 @@ type Card struct {
 
 	Pager string `validate:"max=100"`
 
-	HomeAddr Address `validate:"dive"`
-	WorkAddr Address `validate:"dive"`
+	HomeAddr Address `validate:""`
+	WorkAddr Address `validate:""`
 
 	Homepage     string `validate:"omitempty,url,max=100"`
 	WorkHomepage string `validate:"omitempty,url,max=100"`

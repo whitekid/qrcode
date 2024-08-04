@@ -13,7 +13,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/whitekid/echox"
 	"github.com/whitekid/goxp"
-	"github.com/whitekid/goxp/request"
+	"github.com/whitekid/goxp/requests"
 
 	"qrcodeapi/pkg/ical"
 	"qrcodeapi/pkg/qrcode"
@@ -244,7 +244,7 @@ const (
 )
 
 func (api *APIv1) handleContactVCard(c echo.Context) error {
-	if mediaType, _, _ := mime.ParseMediaType(c.Request().Header.Get(request.HeaderContentType)); mediaType != mimeVCard {
+	if mediaType, _, _ := mime.ParseMediaType(c.Request().Header.Get(requests.HeaderContentType)); mediaType != mimeVCard {
 		return echo.NewHTTPError(http.StatusBadRequest)
 	}
 
@@ -263,7 +263,7 @@ func (api *APIv1) handleContactVCard(c echo.Context) error {
 }
 
 func (api *APIv1) handleVEvent(c echo.Context) error {
-	if mediaType, _, _ := mime.ParseMediaType(c.Request().Header.Get(request.HeaderContentType)); mediaType != mimeVEvent {
+	if mediaType, _, _ := mime.ParseMediaType(c.Request().Header.Get(requests.HeaderContentType)); mediaType != mimeVEvent {
 		return echo.NewHTTPError(http.StatusBadRequest)
 	}
 
